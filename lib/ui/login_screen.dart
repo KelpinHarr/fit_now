@@ -3,6 +3,7 @@ import 'package:fit_now/components/under_part.dart';
 import 'package:fit_now/components/upside.dart';
 import 'package:fit_now/constants.dart';
 import 'package:fit_now/ui/register_screen.dart';
+import 'package:fit_now/ui/home_page.dart';
 import 'package:fit_now/widgets/rounded_button.dart';
 import 'package:fit_now/widgets/rounded_icon.dart';
 import 'package:fit_now/widgets/rounded_input_field.dart';
@@ -38,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child: Stack(
               children: [
+
                 const Upside(imgUrl: "assets/images/login.png"),
                 const PageTitleBar(title: "Login to your account"),
                 Padding(
@@ -118,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               switchListTile(),
                               RoundedButton(text: 'LOGIN', press: () {
-
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
                               }),
                               const SizedBox(
                                 height: 10,
