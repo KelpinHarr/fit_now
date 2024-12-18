@@ -5,8 +5,6 @@ import 'package:fit_now/constants.dart';
 import 'package:fit_now/ui/register_screen.dart';
 import 'package:fit_now/widgets/rounded_button.dart';
 import 'package:fit_now/widgets/rounded_icon.dart';
-import 'package:fit_now/widgets/rounded_input_field.dart';
-import 'package:fit_now/widgets/rounded_password_field.dart';
 import 'package:fit_now/widgets/text_field_container.dart';
 import 'package:flutter/material.dart';
 
