@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_now/components/page_title_bar.dart';
 import 'package:fit_now/components/under_part.dart';
 import 'package:fit_now/components/upside.dart';
@@ -6,6 +8,7 @@ import 'package:fit_now/ui/login_screen.dart';
 import 'package:fit_now/widgets/rounded_button.dart';
 import 'package:fit_now/widgets/text_field_container.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -25,6 +28,71 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
+
+  String email = '', password = '', name = '', confirm_pass = '';
+
+  Future<void> register() async {
+    if (password != null){
+      try {
+        if (password != confirm_pass){
+          Fluttertoast.showToast(
+            msg: 'Password didn\'t match',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            textColor: Colors.white,
+            backgroundColor: Colors.orange,
+            fontSize: 14
+          );
+        }
+        else {
+          UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: email, 
+            password: password
+          );
+
+          final firestore = FirebaseFirestore.instance;
+          final newUser = await firestore.collection('users').doc(userCredential.user!.uid).set({
+            'email' : email,
+            'name' : name,
+            'date_of_birth' : null,
+            'weight' : int.parse(_weightController.text),
+            'height' : int.parse(_heightController.text)
+          });
+
+          Fluttertoast.showToast(
+            msg: 'Register Success',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            textColor: Colors.white,
+            backgroundColor: Colors.green,
+            fontSize: 14
+          );
+        }
+      }
+      on FirebaseAuthException catch (e){
+        if (e.code == 'weak-password'){
+          Fluttertoast.showToast(
+            msg: 'Password is too weak',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            textColor: Colors.white,
+            backgroundColor: Colors.orange,
+            fontSize: 14
+          );
+        }
+        else if (e.code == 'email-already-in-use'){
+          Fluttertoast.showToast(
+            msg: 'Email already exists',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            textColor: Colors.white,
+            backgroundColor: Colors.orange,
+            fontSize: 14
+          );
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +278,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                 ],
                               ),
-                              RoundedButton(text: 'REGISTER', press: (){}),
+                              RoundedButton(text: 'REGISTER', press: (){
+                                setState(() {
+                                  name = _nameController.text;
+                                  email = _emailController.text;
+                                  password = _passwordController.text;
+                                });
+                                register();
+                              }),
                               SizedBox(
                                 height: 10,
                               ),
