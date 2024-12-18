@@ -1,7 +1,11 @@
+import 'package:fit_now/config/config.dart';
 import 'package:fit_now/ui/login_screen.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await firebaseInit();
+  
   runApp(const MyApp());
 }
 

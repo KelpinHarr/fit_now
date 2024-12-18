@@ -1,12 +1,11 @@
 import 'package:fit_now/components/page_title_bar.dart';
 import 'package:fit_now/components/under_part.dart';
 import 'package:fit_now/components/upside.dart';
+import 'package:fit_now/constants.dart';
 import 'package:fit_now/ui/login_screen.dart';
 import 'package:fit_now/widgets/rounded_button.dart';
-import 'package:fit_now/widgets/rounded_input_field.dart';
-import 'package:fit_now/widgets/rounded_password_field.dart';
+import 'package:fit_now/widgets/text_field_container.dart';
 import 'package:flutter/material.dart';
-
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,6 +16,15 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  bool _obsecureText = true;
+  bool _obsecureTextConfPassword = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,15 +71,145 @@ class _RegisterPageState extends State<RegisterPage> {
                           key: _formKey,
                           child: Column(
                             children: [
-                              RoundedInputField(
-                                hintText: "Email",
-                                icon: Icons.email,
+                              TextFieldContainer(
+                                child: TextFormField(
+                                  controller: _emailController,
+                                  cursorColor: kPrimaryColor,
+                                  decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.email,
+                                      color: kPrimaryColor,
+                                    ),
+                                    hintText: 'Email',
+                                    hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                    border: InputBorder.none
+                                  ),
+                                ),
                               ),
-                              RoundedInputField(
-                                hintText: "Name",
-                                icon: Icons.person,
+                              TextFieldContainer(
+                                child: TextFormField(
+                                  controller: _nameController,
+                                  cursorColor: kPrimaryColor,
+                                  decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.person,
+                                      color: kPrimaryColor,
+                                    ),
+                                    hintText: 'Name',
+                                    hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                    border: InputBorder.none
+                                  ),
+                                ),
                               ),
-                              RoundedPasswordField(),
+                              TextFieldContainer(
+                                child: TextFormField(
+                                  controller: _passwordController,
+                                  obscureText: _obsecureText,
+                                  cursorColor: kPrimaryColor,
+                                  decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.lock,
+                                      color: kPrimaryColor,
+                                    ),
+                                    hintText: "Password",
+                                    hintStyle:  TextStyle(fontFamily: 'OpenSans'),
+                                    suffixIcon: IconButton(
+                                      onPressed: (){
+                                        setState(() {
+                                          _obsecureText = !_obsecureText;
+                                        });
+                                      }, 
+                                      icon: Icon(
+                                        _obsecureText ? Icons.visibility_off : Icons.visibility,
+                                        color: Color(0xff36454F),
+                                      )
+                                    ),
+                                    border: InputBorder.none
+                                  ),
+                                ),
+                              ),
+                              TextFieldContainer(
+                                child: TextFormField(
+                                  controller: _confirmPasswordController,
+                                  obscureText: _obsecureTextConfPassword,
+                                  cursorColor: kPrimaryColor,
+                                  decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.lock,
+                                      color: kPrimaryColor,
+                                    ),
+                                    hintText: "Confirm Password",
+                                    hintStyle:  TextStyle(fontFamily: 'OpenSans'),
+                                    suffixIcon: IconButton(
+                                      onPressed: (){
+                                        setState(() {
+                                          _obsecureTextConfPassword = !_obsecureTextConfPassword;
+                                        });
+                                      }, 
+                                      icon: Icon(
+                                        _obsecureTextConfPassword ? Icons.visibility_off : Icons.visibility,
+                                        color: Color(0xff36454F),
+                                      )
+                                    ),
+                                    border: InputBorder.none
+                                  ),
+                                ),
+                              ),
+                              TextFieldContainer(
+                                child: TextFormField(
+                                  controller: _dateController,
+                                  readOnly: true,
+                                  cursorColor: kPrimaryColor,
+                                  decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.calendar_month,
+                                      color: kPrimaryColor,
+                                    ),
+                                    hintText: 'Date of Birth',
+                                    hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                    border: InputBorder.none,
+                                    suffixIcon: IconButton(
+                                      onPressed: (){}, 
+                                      icon: Icon(Icons.calendar_month_outlined)
+                                    )
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.35,
+                                    child: TextFieldContainer(
+                                      child: TextFormField(
+                                        controller: _weightController,
+                                        cursorColor: kPrimaryColor,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          hintText: 'Weight',
+                                          hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.35,
+                                    child: TextFieldContainer(
+                                      child: TextFormField(
+                                        controller: _heightController,
+                                        cursorColor: kPrimaryColor,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          hintText: 'Height',
+                                          hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               RoundedButton(text: 'REGISTER', press: (){}),
                               SizedBox(
                                 height: 10,
@@ -89,7 +227,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               )
                             ],
                           )
-                        )
+                        ),
+                        SizedBox(height: 80)
                       ],
                     ),
                   ),
