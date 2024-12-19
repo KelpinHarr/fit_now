@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:fit_now/components/page_title_bar.dart';
 import 'package:fit_now/components/under_part.dart';
 import 'package:fit_now/components/upside.dart';
@@ -43,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: white,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(50),
                         topRight: Radius.circular(50)
@@ -62,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                         const Text(
                           "or use your email account",
                           style: TextStyle(
-                            color: Colors.grey,
+                            color: blue,
                             fontFamily: 'OpenSans',
                             fontSize: 13,
                             fontWeight: FontWeight.w600
@@ -75,11 +76,11 @@ class _LoginPageState extends State<LoginPage> {
                               TextFieldContainer(
                                 child: TextFormField(
                                   controller: _emailController,
-                                  cursorColor: kPrimaryColor,
+                                  cursorColor: orange,
                                   decoration: InputDecoration(
                                     icon: Icon(
                                       Icons.email,
-                                      color: kPrimaryColor,
+                                      color: orange,
                                     ),
                                     hintText: 'Email',
                                     hintStyle: const TextStyle(fontFamily: 'OpenSans'),
@@ -91,13 +92,14 @@ class _LoginPageState extends State<LoginPage> {
                                 child: TextFormField(
                                   controller: _passwordController,
                                   obscureText: _obsecureText,
-                                  cursorColor: kPrimaryColor,
+                                  cursorColor: orange,
                                   decoration: InputDecoration(
                                     icon: Icon(
                                       Icons.lock,
-                                      color: kPrimaryColor,
+                                      color: orange,
                                     ),
                                     hintText: "Password",
+                                    contentPadding: EdgeInsets.only(top: 10),
                                     hintStyle:  TextStyle(fontFamily: 'OpenSans'),
                                     suffixIcon: IconButton(
                                       onPressed: (){
@@ -107,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                                       }, 
                                       icon: Icon(
                                         _obsecureText ? Icons.visibility_off : Icons.visibility,
-                                        color: Color(0xff36454F),
+                                        color: orange,
                                       )
                                     ),
                                     border: InputBorder.none
@@ -121,13 +123,34 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(
                                 height: 10,
                               ),
+                              // UnderPart(
+                              //   title: "Don't have an account?",
+                              //   navigatorText: "Register here",
+                              //   onTap: () {
+                              //     Navigator.pushNamedAndRemoveUntil(
+                              //       context,
+                              //       '/register',
+                              //       (Route<dynamic> route) => false,
+                              //     );
+                              //   },
+                              // ),
                               UnderPart(
                                 title: "Don't have an account?",
                                 navigatorText: "Register here",
                                 onTap: () {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation, secondaryAnimation) => const RegisterPage(),
+                                      transitionDuration: const Duration(milliseconds: 1200),
+                                      reverseTransitionDuration: const Duration(milliseconds: 1200),
+                                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                        return FadeThroughTransition(
+                                          animation: animation,
+                                          secondaryAnimation: secondaryAnimation,
+                                          child: child,
+                                        );
+                                      },
+                                    ),
                                     (Route<dynamic> route) => false,
                                   );
                                 },
@@ -138,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                               const Text(
                                 'Forgot password?',
                                 style: TextStyle(
-                                  color: kPrimaryColor,
+                                  color: orange,
                                   fontFamily: 'OpenSans',
                                   fontWeight: FontWeight.w600,
                                   fontSize: 13
@@ -170,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
         ),
         value: _switchValue,
-        activeColor: kPrimaryColor,
+        activeColor: Color(0xFF4B4A48),
         onChanged: _isEnabled
             ? (val){
                 setState(() {
