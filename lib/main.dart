@@ -1,5 +1,6 @@
 import 'package:fit_now/config/config.dart';
 import 'package:fit_now/ui/login_screen.dart';
+import 'package:fit_now/ui/register_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/login',
       routes: {
-        '/login': (context) => const LoginPage()
+        '/login': (context) => const LoginPage(),
+        '/register' : (context) => RegisterPage()
       },
     );
   }

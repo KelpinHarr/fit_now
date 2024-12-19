@@ -20,27 +20,29 @@ class UnderPart extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-              fontFamily: 'OpenSans',
-              fontSize: 13,
-              color: Colors.grey,
-              fontWeight: FontWeight.w600),
+            fontFamily: 'OpenSans',
+            fontSize: 13,
+            color: blue,
+            fontWeight: FontWeight.bold
+          ),
         ),
         const SizedBox(
           width: 20,
         ),
-        InkWell(
-          onTap: () {
+        TextButton(
+          onPressed: (){
             onTap();
           },
           child: Text(
             navigatorText,
-            style: const TextStyle(
-                color: kPrimaryColor,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Opensans'),
-          ),
-        )
+            style: TextStyle(
+              color: orange,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Opensans'
+            ),
+          )
+        ),
       ],
     );
   }
