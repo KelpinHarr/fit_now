@@ -74,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
           );
 
           final firestore = FirebaseFirestore.instance;
-          final newUser = await firestore.collection('users').doc(userCredential.user!.uid).set({
+          await firestore.collection('users').doc(userCredential.user!.uid).set({
             'email' : email,
             'name' : name,
             'date_of_birth' : _selectedDate,
