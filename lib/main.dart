@@ -1,4 +1,5 @@
 import 'package:fit_now/config/config.dart';
+import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/login_screen.dart';
 import 'package:fit_now/ui/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginPage(),
-        '/register' : (context) => RegisterPage()
+        '/register' : (context) => const RegisterPage(),
+        '/home' : (context) => const HomePage()
       },
     );
   }

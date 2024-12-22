@@ -1,25 +1,23 @@
   import 'package:flutter/material.dart';
 
 void showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Row(
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: CircularProgressIndicator(),
-              ),
-              const SizedBox(width: 20),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text("Please wait..."),
-              ),
+              CircularProgressIndicator(),
+              SizedBox(width: 16.0),
+              Text("Processing..."),
             ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}

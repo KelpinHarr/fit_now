@@ -1,14 +1,17 @@
 import 'package:animations/animations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_now/components/page_title_bar.dart';
 import 'package:fit_now/components/under_part.dart';
 import 'package:fit_now/components/upside.dart';
 import 'package:fit_now/constants.dart';
+import 'package:fit_now/controller/dialog_controller.dart';
 import 'package:fit_now/ui/register_screen.dart';
 import 'package:fit_now/widgets/rounded_button.dart';
 import 'package:fit_now/widgets/rounded_icon.dart';
 import 'package:fit_now/widgets/text_field_container.dart';
 import 'package:flutter/material.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,6 +28,81 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
+
+  String email = '', password = '', _name = '';
+
+  Future<void> login() async {
+    if (_formKey.currentState!.validate()){
+      setState(() {
+        email = _emailController.text;
+        password = _passwordController.text;
+      });
+
+      try {
+        showLoadingDialog(context);
+        final auth = FirebaseAuth.instance;
+        UserCredential userCredential = await auth.signInWithEmailAndPassword(
+          email: email, 
+          password: password
+        );
+
+        final firestore = FirebaseFirestore.instance;
+        final userDocs = await firestore
+            .collection('users')
+            .where('email', isEqualTo: email)
+            .get();
+
+        if (userDocs.docs.isNotEmpty){
+          final users = userDocs.docs.first;
+          final name = users['name'];
+
+          setState(() {
+            _name = name;
+          });
+
+          Navigator.pushNamed(
+            context, 
+            '/home', 
+          );
+
+          Navigator.of(context).pop();
+        }
+      }
+      on FirebaseAuthException catch (e){
+        String message;
+        if (e.code == 'user-not-found'){
+          message = 'User not found';
+        }
+        else if (e.code == 'wrong-password'){
+          message = 'Wrong Password';
+        }
+        else {
+          message = 'An error occured. Please try again.';
+        }
+
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white,
+          backgroundColor: Colors.orange,
+          fontSize: 14
+        );
+      }
+      catch (e){
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(
+          msg: 'Error :$e',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white,
+          backgroundColor: Colors.orange,
+          fontSize: 14
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,9 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               switchListTile(),
-                              RoundedButton(text: 'LOGIN', press: () {
-
-                              }),
+                              RoundedButton(text: 'LOGIN', press: login),
                               const SizedBox(
                                 height: 10,
                               ),
