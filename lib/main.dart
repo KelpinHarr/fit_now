@@ -1,4 +1,3 @@
-import 'package:fit_now/models/User.dart';
 import 'package:fit_now/config/config.dart';
 import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/login_screen.dart';
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/register' : (context) => const RegisterPage(),
         '/home' : (context) => HomePage(
-          user: ModalRoute.of(context)?.settings.arguments as User
+          email: ModalRoute.of(context)?.settings.arguments as String
         )
       },
     );

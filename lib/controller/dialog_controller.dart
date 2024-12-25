@@ -13,7 +13,7 @@ void showLoadingDialog(BuildContext context) {
             children: [
               CircularProgressIndicator(),
               SizedBox(width: 16.0),
-              Text("Processing..."),
+              Text("Please wait..."),
             ],
           ),
         ),
