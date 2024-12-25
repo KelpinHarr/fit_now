@@ -6,6 +6,7 @@ import 'package:fit_now/components/under_part.dart';
 import 'package:fit_now/components/upside.dart';
 import 'package:fit_now/constants.dart';
 import 'package:fit_now/controller/dialog_controller.dart';
+import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/register_screen.dart';
 import 'package:fit_now/widgets/rounded_button.dart';
 import 'package:fit_now/widgets/rounded_icon.dart';
@@ -60,17 +61,19 @@ class _LoginPageState extends State<LoginPage> {
             _name = name;
           });
 
-          Navigator.pushNamed(
-            context, 
-            '/home', 
-          );
-
           Navigator.of(context).pop();
+          Navigator.push(
+            context, 
+            MaterialPageRoute(builder: (context) => HomePage(email: email))
+          );
         }
       }
       on FirebaseAuthException catch (e){
         String message;
         if (e.code == 'user-not-found'){
+          message = 'User not found';
+        }
+        else if (e.code == 'invalid-credential'){
           message = 'User not found';
         }
         else if (e.code == 'wrong-password'){
