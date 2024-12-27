@@ -1,3 +1,4 @@
+import 'package:fit_now/ui/chat.dart';
 import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/workout.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +74,8 @@ class CustomBottomNavBar extends StatelessWidget {
               MaterialPageRoute(builder: (context)=> WorkoutPage(email: email)), 
               (Route<dynamic> route) => false
             );
+            break;
+
           default:
             onTabSelected(index);
         }
