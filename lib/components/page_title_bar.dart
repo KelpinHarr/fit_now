@@ -24,7 +24,7 @@ class PageTitleBar extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontFamily: 'OpenSans',
+              fontFamily: 'ReadexPro-Medium',
               fontSize: 20,
               letterSpacing: 1,
               fontWeight: FontWeight.bold,

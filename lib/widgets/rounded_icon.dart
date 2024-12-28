@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class RoundedIcon extends StatelessWidget {
-  const RoundedIcon({ Key? key,required this.imageUrl }) : super(key: key);
+  const RoundedIcon({ Key? key,required this.imageUrl, this.press }) : super(key: key);
   final String imageUrl;
+  final Function()? press;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -22,6 +24,7 @@ class RoundedIcon extends StatelessWidget {
           )
         ),
       ),
+      onTap: press,
     );
   }
 }

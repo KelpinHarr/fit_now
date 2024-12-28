@@ -20,7 +20,7 @@ class UnderPart extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-            fontFamily: 'OpenSans',
+            fontFamily: 'ReadexPro-Medium',
             fontSize: 13,
             color: blue,
             fontWeight: FontWeight.bold
@@ -39,7 +39,7 @@ class UnderPart extends StatelessWidget {
               color: orange,
               fontSize: 13,
               fontWeight: FontWeight.bold,
-              fontFamily: 'Opensans'
+              fontFamily: 'ReadexPro-Medium'
             ),
           )
         ),
