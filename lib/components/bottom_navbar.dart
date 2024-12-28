@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fit_now/session_helper.dart';
 import 'package:fit_now/ui/chat.dart';
 import 'package:fit_now/ui/home.dart';
+import 'package:fit_now/ui/login_screen.dart';
 import 'package:fit_now/ui/workout.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:iconsax/iconsax.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -51,6 +55,18 @@ class CustomBottomNavBar extends StatelessWidget {
     );
   }
 
+  Future<void> logoutFromGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      await googleSignIn.signOut();
+      await FirebaseAuth.instance.signOut();
+      print('User successfully logged out');
+    } 
+    catch (e) {
+      print('Error during logout: $e');
+    }
+  }
+
   Widget _buildNavItem(IconData icon, int index, BuildContext context) {
     return IconButton(
       icon: Icon(
@@ -58,7 +74,7 @@ class CustomBottomNavBar extends StatelessWidget {
         color: currentIndex == index ? selectedColor : unselectedColor,
       ),
       iconSize: 35,
-      onPressed: () {
+      onPressed: () async {
         switch (index) {
           case 0:
             Navigator.pushAndRemoveUntil(
@@ -72,6 +88,16 @@ class CustomBottomNavBar extends StatelessWidget {
             Navigator.pushAndRemoveUntil(
               context, 
               MaterialPageRoute(builder: (context)=> WorkoutPage(email: email)), 
+              (Route<dynamic> route) => false
+            );
+            break;
+          
+          case 4 :
+            await SessionHelper.clearLoginStatus();
+            // await logoutFromGoogle();
+            Navigator.pushAndRemoveUntil(
+              context, 
+              MaterialPageRoute(builder: (context) => LoginPage()), 
               (Route<dynamic> route) => false
             );
             break;

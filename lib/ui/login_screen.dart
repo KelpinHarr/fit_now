@@ -6,6 +6,7 @@ import 'package:fit_now/components/under_part.dart';
 import 'package:fit_now/components/upside.dart';
 import 'package:fit_now/constants.dart';
 import 'package:fit_now/controller/dialog_controller.dart';
+import 'package:fit_now/session_helper.dart';
 import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/register_screen.dart';
 import 'package:fit_now/widgets/rounded_button.dart';
@@ -13,6 +14,7 @@ import 'package:fit_now/widgets/rounded_icon.dart';
 import 'package:fit_now/widgets/text_field_container.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -56,6 +58,10 @@ class _LoginPageState extends State<LoginPage> {
         if (userDocs.docs.isNotEmpty){
           final users = userDocs.docs.first;
           final name = users['name'];
+
+          if (_switchValue || _isEnabled){
+            await SessionHelper.setLoginStatus(name, email);
+          }
 
           setState(() {
             _name = name;
@@ -107,6 +113,139 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _showDialog() async {
+    final TextEditingController _emailDialogController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Reset Password', style: TextStyle(fontFamily: 'ReadexPro-Medium'),),
+          backgroundColor: white,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Enter your email address to reset your password.', style: TextStyle(fontFamily: 'ReadexPro-Medium'),),
+              SizedBox(height: 10),
+              TextFieldContainer(
+                child: TextFormField(
+                  controller: _emailDialogController,
+                  cursorColor: orange,
+                  decoration: InputDecoration(
+                    icon: Icon(
+                      Icons.email,
+                      color: orange,
+                    ),
+                    hintText: 'Email',
+                    hintStyle: const TextStyle(fontFamily: 'ReadexPro-Medium'),
+                    border: InputBorder.none
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: blue
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                String email = _emailDialogController.text.trim();
+                if (email.isNotEmpty) {
+                  Navigator.of(context).pop();
+                  await _resetPassword(email);
+                } 
+                else {
+                  Fluttertoast.showToast(
+                    msg: 'Please enter a valid email address.',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 14,
+                  );
+                }
+              },
+              child: Text(
+                'Send',
+                style: TextStyle(
+                  color: white
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: blue
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> loginWithGoogle() async {
+    showLoadingDialog(context);
+    try {
+      final _auth = FirebaseAuth.instance;
+      final googleUser = await GoogleSignIn().signIn();
+      final googleAuth = await googleUser?.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth?.idToken,
+        accessToken: googleAuth?.accessToken
+      );
+
+      UserCredential userCredential = await _auth.signInWithCredential(credential);
+      User? user = userCredential.user;
+
+      if (user != null){
+          Navigator.pop(context);
+          Navigator.push(
+            context, 
+            MaterialPageRoute(builder: (context) => HomePage(email: user.email!, name: user.displayName,))
+          );
+      }
+    } 
+    on FirebaseAuthException catch (e){
+      Fluttertoast.showToast(
+        msg: 'Error :$e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        textColor: Colors.white,
+        backgroundColor: Colors.orange,
+        fontSize: 14
+      );
+    }
+  }
+
+  Future<void> _resetPassword(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      Fluttertoast.showToast(
+        msg: 'Email has been sent',
+        toastLength: Toast.LENGTH_LONG,
+        textColor: white,
+        backgroundColor: Colors.green
+      );
+    }
+    on FirebaseAuthException catch (e){
+      Fluttertoast.showToast(
+        msg: 'Error :$e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        textColor: Colors.white,
+        backgroundColor: Colors.orange,
+        fontSize: 14
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -137,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(
                           height: 15,
                         ),
-                        iconButton(context),
+                        iconButton(context, loginWithGoogle),
                         const SizedBox(
                           height: 20,
                         ),
@@ -145,9 +284,9 @@ class _LoginPageState extends State<LoginPage> {
                           "or use your email account",
                           style: TextStyle(
                             color: blue,
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'ReadexPro-Medium',
                             fontSize: 13,
-                            fontWeight: FontWeight.w600
+                            fontWeight: FontWeight.w800
                           ),
                         ),
                         Form(
@@ -164,7 +303,7 @@ class _LoginPageState extends State<LoginPage> {
                                       color: orange,
                                     ),
                                     hintText: 'Email',
-                                    hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                    hintStyle: const TextStyle(fontFamily: 'ReadexPro-Medium'),
                                     border: InputBorder.none
                                   ),
                                 ),
@@ -181,7 +320,7 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                     hintText: "Password",
                                     contentPadding: EdgeInsets.only(top: 10),
-                                    hintStyle:  TextStyle(fontFamily: 'OpenSans'),
+                                    hintStyle:  TextStyle(fontFamily: 'ReadexPro-Medium'),
                                     suffixIcon: IconButton(
                                       onPressed: (){
                                         setState(() {
@@ -234,19 +373,19 @@ class _LoginPageState extends State<LoginPage> {
                                   );
                                 },
                               ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              const Text(
-                                'Forgot password?',
-                                style: TextStyle(
-                                  color: orange,
-                                  fontFamily: 'OpenSans',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 13
+                              TextButton(
+                                onPressed: _showDialog, 
+                                child: Text(
+                                  'Forgot password?',
+                                  style: TextStyle(
+                                    color: orange,
+                                    fontFamily: 'ReadexPro-Medium',
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 50,)
+                              const SizedBox(height: 30)
                             ],
                           ),
                         )
@@ -269,12 +408,13 @@ class _LoginPageState extends State<LoginPage> {
         dense: true,
         title: const Text(
           'Remember Me',
-          style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
+          style: TextStyle(fontSize: 16, fontFamily: 'ReadexPro-Medium'),
         ),
         value: _switchValue,
         activeColor: Color(0xFF4B4A48),
         onChanged: _isEnabled
             ? (val){
+                print('Value: $val');
                 setState(() {
                   _switchValue = val;
                 });
@@ -285,12 +425,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-
-iconButton(BuildContext context) {
+iconButton(BuildContext context, Function()? login) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
-    children: const [
-      RoundedIcon(imageUrl: "assets/images/google.jpg"),
+    children: [
+      RoundedIcon(imageUrl: "assets/images/google.jpg", press: login),
     ],
   );
 }

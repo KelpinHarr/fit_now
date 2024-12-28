@@ -7,11 +7,13 @@ import 'package:fit_now/components/upside.dart';
 import 'package:fit_now/constants.dart';
 import 'package:fit_now/controller/dialog_controller.dart';
 import 'package:fit_now/controller/user_controller.dart';
+import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/login_screen.dart';
 import 'package:fit_now/widgets/rounded_button.dart';
 import 'package:fit_now/widgets/text_field_container.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -137,6 +139,38 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  Future<void> loginWithGoogle() async {
+    try {
+      final _auth = FirebaseAuth.instance;
+      final googleUser = await GoogleSignIn().signIn();
+      final googleAuth = await googleUser?.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth?.idToken,
+        accessToken: googleAuth?.accessToken
+      );
+
+      UserCredential userCredential = await _auth.signInWithCredential(credential);
+      User? user = userCredential.user;
+
+      if (user != null){
+          Navigator.push(
+            context, 
+            MaterialPageRoute(builder: (context) => HomePage(email: user.email!))
+          );
+      }
+    } 
+    on FirebaseAuthException catch (e){
+      Fluttertoast.showToast(
+        msg: 'Error :$e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        textColor: Colors.white,
+        backgroundColor: Colors.orange,
+        fontSize: 14
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -167,7 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(height: 15),
-                        iconButton(context),
+                        iconButton(context, loginWithGoogle),
                         SizedBox(height: 20),
                         Text(
                           'or use your email account',

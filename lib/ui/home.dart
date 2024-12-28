@@ -7,7 +7,8 @@ import 'package:iconsax/iconsax.dart';
 
 class HomePage extends StatefulWidget {
   final String email;
-  const HomePage({super.key, required this.email});
+  final String? name;
+  const HomePage({super.key, required this.email, this.name});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -136,15 +137,26 @@ class _HomePageState extends State<HomePage> {
           children: [
             Padding(
               padding: EdgeInsets.only(top: 30, left: 20),
-              child: Text(
-                'Welcome, ${_name}!',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontFamily: 'ReadexPro-Medium',
-                  fontWeight: FontWeight.bold
+              child: _name == '' 
+                ? Text(
+                    'Welcome, ${widget.name}!',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontFamily: 'ReadexPro-Medium',
+                      fontWeight: FontWeight.bold
+                    ),
+                  )
+                :
+                Text(
+                  'Welcome, ${_name}!',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: 'ReadexPro-Medium',
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
-              ),
             ),
             SizedBox(height: 5),
             Padding(
@@ -239,10 +251,9 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               _currentIndex = 2;
             });
-            Navigator.pushAndRemoveUntil(
+            Navigator.push(
               context, 
               MaterialPageRoute(builder: (context) => ChatPage(email: widget.email)), 
-              (Route<dynamic> route) => false
             );
           },
           backgroundColor: darkBlue,
