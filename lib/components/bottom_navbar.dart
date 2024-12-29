@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_now/session_helper.dart';
-import 'package:fit_now/ui/chat.dart';
 import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/login_screen.dart';
 import 'package:fit_now/ui/workout.dart';

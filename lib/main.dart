@@ -2,7 +2,6 @@ import 'package:fit_now/config/config.dart';
 import 'package:fit_now/session_helper.dart';
 import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/login_screen.dart';
-import 'package:fit_now/ui/register_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
-      future: _initializeApp(),
+      future: _initApp(),
       builder: (context, snapshot){
         if (snapshot.connectionState == ConnectionState.waiting){
           return MaterialApp(
@@ -82,7 +81,7 @@ class MyApp extends StatelessWidget {
     // );
   }
 
-  Future<Map<String, dynamic>> _initializeApp() async {
+  Future<Map<String, dynamic>> _initApp() async {
     bool isLoggedIn = await SessionHelper.getLoginStatus();
     bool isLoginExpired = await SessionHelper.isLoginExpired();
     String? userName = await SessionHelper.getUserName();
