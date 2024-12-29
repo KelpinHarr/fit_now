@@ -390,7 +390,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 title: "Already have an account?",
                                 navigatorText: "Login here",
                                 onTap: () {
-                                  Navigator.of(context).pushAndRemoveUntil(
+                                  Navigator.of(context).push(
                                     PageRouteBuilder(
                                       pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
                                       transitionDuration: const Duration(milliseconds: 1200),
@@ -403,7 +403,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                         );
                                       },
                                     ),
-                                    (Route<dynamic> route) => false,
+                                    // (Route<dynamic> route) => false,
                                   );
                                 },
                               ),
