@@ -3,6 +3,7 @@ import 'package:fit_now/components/bottom_navbar.dart';
 import 'package:fit_now/constants.dart';
 import 'package:fit_now/ui/chat.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconsax/iconsax.dart';
 
 class HomePage extends StatefulWidget {
@@ -41,12 +42,18 @@ class _HomePageState extends State<HomePage> {
       }
     }
     catch(e){
-
+      Fluttertoast.showToast(
+        msg: 'Error :$e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        textColor: Colors.white,
+        backgroundColor: Colors.orange,
+        fontSize: 14
+      );
     }
   }
 
   void _showCategoryDialog(BuildContext context) {
-    // Peta untuk menyimpan status setiap checkbox
     Map<String, bool> selectedCategories = {
       'Upper Body': false,
       'Arms & Shoulder': false,
@@ -69,7 +76,7 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 padding: EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
-                  color: Colors.blue, // Warna biru seperti pada gambar
+                  color: Colors.blue,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 child: Column(
@@ -82,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                           category,
                           style: TextStyle(color: Colors.white),
                         ),
-                        value: selectedCategories[category], // Nilai dinamis
+                        value: selectedCategories[category],
                         onChanged: (bool? value) {
                           setState(() {
                             selectedCategories[category] = value ?? false;
@@ -98,12 +105,11 @@ class _HomePageState extends State<HomePage> {
                       alignment: Alignment.center,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Logika untuk submit pilihan
                           print("Selected Categories: $selectedCategories");
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange, // Warna tombol submit
+                          backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -111,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                         child: Text(
                           'Submit',
                           style: TextStyle(
-                            color: Colors.black, // Warna teks pada tombol
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

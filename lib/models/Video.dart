@@ -1,9 +1,15 @@
 class Video {
-  final String video_id;
+  final String url;
   final String title;
+  final String creator;
+  final String videoId;
 
   Video({
-    required this.video_id,
-    required this.title
+    required this.url,
+    required this.title,
+    required this.creator,
+    required this.videoId
   });
+
+  String get thumbnailUrl => "https://img.youtube.com/vi/$videoId/hqdefault.jpg";
 }
