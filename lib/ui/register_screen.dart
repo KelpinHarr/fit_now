@@ -175,251 +175,249 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SafeArea(
-        child: SizedBox(
-          width: size.width,
-          height: size.height,
-          child: SingleChildScrollView(
-            child: Stack(
-              children: [
-                const Upside(
-                  imgUrl: "assets/images/register.png"
-                ),
-                const PageTitleBar(title: 'Create New Account'),
-                Padding(
-                  padding: const EdgeInsets.only(top: 320),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(50),
-                        topRight: Radius.circular(50)
-                      )
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 15),
-                        iconButton(context, loginWithGoogle),
-                        SizedBox(height: 20),
-                        Text(
-                          'or use your email account',
-                          style: TextStyle(
-                            color: blue,
-                            fontFamily: 'Open Sans',
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold
-                          ),
+      body: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              const Upside(
+                imgUrl: "assets/images/register.png"
+              ),
+              const PageTitleBar(title: 'Create New Account'),
+              Padding(
+                padding: const EdgeInsets.only(top: 320),
+                child: Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(50),
+                      topRight: Radius.circular(50)
+                    )
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 15),
+                      iconButton(context, loginWithGoogle),
+                      SizedBox(height: 20),
+                      Text(
+                        'or use your email account',
+                        style: TextStyle(
+                          color: blue,
+                          fontFamily: 'Open Sans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold
                         ),
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              TextFieldContainer(
-                                child: TextFormField(
-                                  controller: _emailController,
-                                  cursorColor: kPrimaryColor,
-                                  decoration: InputDecoration(
-                                    icon: Icon(
-                                      Icons.email,
-                                      color: orange,
-                                    ),
-                                    hintText: 'Email',
-                                    hintStyle: const TextStyle(fontFamily: 'OpenSans'),
-                                    contentPadding: EdgeInsets.only(top: 0),
-                                    border: InputBorder.none
+                      ),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _emailController,
+                                cursorColor: kPrimaryColor,
+                                decoration: InputDecoration(
+                                  icon: Icon(
+                                    Icons.email,
+                                    color: orange,
                                   ),
+                                  hintText: 'Email',
+                                  hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                  contentPadding: EdgeInsets.only(top: 0),
+                                  border: InputBorder.none
                                 ),
                               ),
-                              TextFieldContainer(
-                                child: TextFormField(
-                                  controller: _nameController,
-                                  cursorColor: orange,
-                                  decoration: InputDecoration(
-                                    icon: Icon(
-                                      Icons.person,
-                                      color: orange,
-                                    ),
-                                    hintText: 'Name',
-                                    contentPadding: EdgeInsets.only(top: 1),
-                                    hintStyle: const TextStyle(fontFamily: 'OpenSans'),
-                                    border: InputBorder.none
+                            ),
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _nameController,
+                                cursorColor: orange,
+                                decoration: InputDecoration(
+                                  icon: Icon(
+                                    Icons.person,
+                                    color: orange,
                                   ),
+                                  hintText: 'Name',
+                                  contentPadding: EdgeInsets.only(top: 1),
+                                  hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                  border: InputBorder.none
                                 ),
                               ),
-                              TextFieldContainer(
-                                child: TextFormField(
-                                  controller: _passwordController,
-                                  obscureText: _obsecureText,
-                                  cursorColor: orange,
-                                  decoration: InputDecoration(
-                                    icon: Icon(
-                                      Icons.lock,
-                                      color: orange,
-                                    ),
-                                    hintText: "Password",
-                                    contentPadding: EdgeInsets.only(top: 11),
-                                    hintStyle:  TextStyle(fontFamily: 'OpenSans'),
-                                    suffixIcon: IconButton(
-                                      onPressed: (){
-                                        setState(() {
-                                          _obsecureText = !_obsecureText;
-                                        });
-                                      }, 
-                                      icon: Icon(
-                                        _obsecureText ? Icons.visibility_off : Icons.visibility,
-                                        color: orange,
-                                      )
-                                    ),
-                                    border: InputBorder.none
+                            ),
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _passwordController,
+                                obscureText: _obsecureText,
+                                cursorColor: orange,
+                                decoration: InputDecoration(
+                                  icon: Icon(
+                                    Icons.lock,
+                                    color: orange,
                                   ),
-                                ),
-                              ),
-                              TextFieldContainer(
-                                child: TextFormField(
-                                  controller: _confirmPasswordController,
-                                  obscureText: _obsecureTextConfPassword,
-                                  cursorColor: orange,
-                                  decoration: InputDecoration(
+                                  hintText: "Password",
+                                  contentPadding: EdgeInsets.only(top: 11),
+                                  hintStyle:  TextStyle(fontFamily: 'OpenSans'),
+                                  suffixIcon: IconButton(
+                                    onPressed: (){
+                                      setState(() {
+                                        _obsecureText = !_obsecureText;
+                                      });
+                                    }, 
                                     icon: Icon(
-                                      Icons.lock_outline,
+                                      _obsecureText ? Icons.visibility_off : Icons.visibility,
                                       color: orange,
-                                    ),
-                                    hintText: "Confirm Password",
-                                    hintStyle:  TextStyle(fontFamily: 'OpenSans'),
-                                    contentPadding: EdgeInsets.only(top: 11),
-                                    suffixIcon: IconButton(
-                                      onPressed: (){
-                                        setState(() {
-                                          _obsecureTextConfPassword = !_obsecureTextConfPassword;
-                                        });
-                                      }, 
-                                      icon: Icon(
-                                        _obsecureTextConfPassword ? Icons.visibility_off : Icons.visibility,
-                                        color: orange,
-                                      )
-                                    ),
-                                    border: InputBorder.none
-                                  ),
-                                ),
-                              ),
-                              TextFieldContainer(
-                                child: TextFormField(
-                                  controller: _dateController,
-                                  readOnly: true,
-                                  cursorColor: orange,
-                                  decoration: InputDecoration(
-                                    icon: Icon(
-                                      Icons.calendar_month,
-                                      color: orange,
-                                    ),
-                                    hintText: 'Date of Birth',
-                                    contentPadding: EdgeInsets.only(top: 11),
-                                    hintStyle: const TextStyle(fontFamily: 'OpenSans'),
-                                    border: InputBorder.none,
-                                    suffixIcon: IconButton(
-                                      onPressed: _selectDate, 
-                                      icon: Icon(
-                                        Icons.calendar_month_outlined,
-                                        color: orange,
-                                      )
                                     )
                                   ),
+                                  border: InputBorder.none
                                 ),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.35,
-                                    child: TextFieldContainer(
-                                      child: TextFormField(
-                                        controller: _weightController,
-                                        cursorColor: kPrimaryColor,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                          hintText: 'Weight',
-                                          hintStyle: const TextStyle(fontFamily: 'OpenSans'),
-                                          border: InputBorder.none,
-                                        ),
+                            ),
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _confirmPasswordController,
+                                obscureText: _obsecureTextConfPassword,
+                                cursorColor: orange,
+                                decoration: InputDecoration(
+                                  icon: Icon(
+                                    Icons.lock_outline,
+                                    color: orange,
+                                  ),
+                                  hintText: "Confirm Password",
+                                  hintStyle:  TextStyle(fontFamily: 'OpenSans'),
+                                  contentPadding: EdgeInsets.only(top: 11),
+                                  suffixIcon: IconButton(
+                                    onPressed: (){
+                                      setState(() {
+                                        _obsecureTextConfPassword = !_obsecureTextConfPassword;
+                                      });
+                                    }, 
+                                    icon: Icon(
+                                      _obsecureTextConfPassword ? Icons.visibility_off : Icons.visibility,
+                                      color: orange,
+                                    )
+                                  ),
+                                  border: InputBorder.none
+                                ),
+                              ),
+                            ),
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _dateController,
+                                readOnly: true,
+                                cursorColor: orange,
+                                decoration: InputDecoration(
+                                  icon: Icon(
+                                    Icons.calendar_month,
+                                    color: orange,
+                                  ),
+                                  hintText: 'Date of Birth',
+                                  contentPadding: EdgeInsets.only(top: 11),
+                                  hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                  border: InputBorder.none,
+                                  suffixIcon: IconButton(
+                                    onPressed: _selectDate, 
+                                    icon: Icon(
+                                      Icons.calendar_month_outlined,
+                                      color: orange,
+                                    )
+                                  )
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.35,
+                                  child: TextFieldContainer(
+                                    child: TextFormField(
+                                      controller: _weightController,
+                                      cursorColor: kPrimaryColor,
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        hintText: 'Weight',
+                                        hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                        border: InputBorder.none,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.35,
-                                    child: TextFieldContainer(
-                                      child: TextFormField(
-                                        controller: _heightController,
-                                        cursorColor: kPrimaryColor,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                          hintText: 'Height',
-                                          hintStyle: const TextStyle(fontFamily: 'OpenSans'),
-                                          border: InputBorder.none,
-                                        ),
+                                ),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.35,
+                                  child: TextFieldContainer(
+                                    child: TextFormField(
+                                      controller: _heightController,
+                                      cursorColor: kPrimaryColor,
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        hintText: 'Height',
+                                        hintStyle: const TextStyle(fontFamily: 'OpenSans'),
+                                        border: InputBorder.none,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                              RoundedButton(text: 'REGISTER', press: (){
-                                setState(() {
-                                  name = _nameController.text;
-                                  email = _emailController.text;
-                                  password = _passwordController.text;
-                                  confirm_pass = _confirmPasswordController.text;
-                                });
-                                register();
-                              }),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              // UnderPart(
-                              //   title: "Already have an account?",
-                              //   navigatorText: "Login Here", 
-                              //   onTap: (){
-                              //     Navigator.pushNamedAndRemoveUntil(
-                              //       context,
-                              //       '/login',
-                              //       (Route<dynamic> route) => false,
-                              //     );
-                              //   }
-                              // )
-                              UnderPart(
-                                title: "Already have an account?",
-                                navigatorText: "Login here",
-                                onTap: () {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
-                                      transitionDuration: const Duration(milliseconds: 1200),
-                                      reverseTransitionDuration: const Duration(milliseconds: 1200),
-                                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                        return FadeThroughTransition(
-                                          animation: animation,
-                                          secondaryAnimation: secondaryAnimation,
-                                          child: child,
-                                        );
-                                      },
-                                    ),
-                                    (Route<dynamic> route) => false,
-                                  );
-                                },
-                              ),
-                            ],
-                          )
-                        ),
-                        SizedBox(height: 30)
-                      ],
-                    ),
+                                ),
+                              ],
+                            ),
+                            RoundedButton(text: 'REGISTER', press: (){
+                              setState(() {
+                                name = _nameController.text;
+                                email = _emailController.text;
+                                password = _passwordController.text;
+                                confirm_pass = _confirmPasswordController.text;
+                              });
+                              register();
+                            }),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            // UnderPart(
+                            //   title: "Already have an account?",
+                            //   navigatorText: "Login Here", 
+                            //   onTap: (){
+                            //     Navigator.pushNamedAndRemoveUntil(
+                            //       context,
+                            //       '/login',
+                            //       (Route<dynamic> route) => false,
+                            //     );
+                            //   }
+                            // )
+                            UnderPart(
+                              title: "Already have an account?",
+                              navigatorText: "Login here",
+                              onTap: () {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
+                                    transitionDuration: const Duration(milliseconds: 1200),
+                                    reverseTransitionDuration: const Duration(milliseconds: 1200),
+                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      return FadeThroughTransition(
+                                        animation: animation,
+                                        secondaryAnimation: secondaryAnimation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                  (Route<dynamic> route) => false,
+                                );
+                              },
+                            ),
+                          ],
+                        )
+                      ),
+                      SizedBox(height: 30)
+                    ],
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
-        )
-      ),
+        ),
+      )
     );
   }
 }
