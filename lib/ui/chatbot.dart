@@ -5,7 +5,8 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ChatBotPage extends StatefulWidget {
-  const ChatBotPage({super.key});
+  final String email;
+  const ChatBotPage({super.key, required this.email});
 
   @override
   State<ChatBotPage> createState() => _ChatBotPageState();
@@ -106,7 +107,6 @@ class _ChatBotPageState extends State<ChatBotPage> with SingleTickerProviderStat
         ),
       ),
     );
-
   }
   LlmChatViewStyle get style {
     return LlmChatViewStyle(
@@ -129,8 +129,8 @@ class _ChatBotPageState extends State<ChatBotPage> with SingleTickerProviderStat
         hintStyle: TextStyle(
           color: Colors.grey.shade400,
           fontFamily: 'ReadexPro-Medium',
-          fontSize: 16
-        )
+          fontSize: 14
+        ),
       ),
       userMessageStyle: UserMessageStyle(
         textStyle: TextStyle(
@@ -159,7 +159,7 @@ class _ChatBotPageState extends State<ChatBotPage> with SingleTickerProviderStat
         ),
       ),
       llmMessageStyle: LlmMessageStyle(
-        icon: Iconsax.weight,
+        icon: Iconsax.weight_1,
         iconColor: white,
         iconDecoration: BoxDecoration(
           color: blue,

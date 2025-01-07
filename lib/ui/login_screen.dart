@@ -213,6 +213,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } 
     on FirebaseAuthException catch (e){
+      Navigator.pop(context);
       Fluttertoast.showToast(
         msg: 'Error :$e',
         toastLength: Toast.LENGTH_LONG,
