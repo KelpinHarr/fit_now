@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_now/components/bottom_navbar.dart';
 import 'package:fit_now/constants.dart';
 import 'package:fit_now/ui/chat.dart';
+import 'package:fit_now/ui/chatbot.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconsax/iconsax.dart';
@@ -259,7 +260,7 @@ class _HomePageState extends State<HomePage> {
             });
             Navigator.push(
               context, 
-              MaterialPageRoute(builder: (context) => ChatPage(email: widget.email)), 
+              MaterialPageRoute(builder: (context) => ChatBotPage(email: widget.email)), 
             );
           },
           backgroundColor: darkBlue,
