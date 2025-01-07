@@ -1,6 +1,7 @@
 import 'package:fit_now/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ai_toolkit/flutter_ai_toolkit.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -23,7 +24,7 @@ class _ChatBotPageState extends State<ChatBotPage> with SingleTickerProviderStat
   late final _provider = GeminiProvider(
     model: GenerativeModel(
       model: 'gemini-1.5-flash', 
-      apiKey: 'AIzaSyB2PISnue91BwIIuRWjtkUQJDmJv3P85S0'
+      apiKey: 'AIzaSyCJ64OWpDfyxn51aOM39_hpeEM9hazz7NI'
     )
   );
 
@@ -101,7 +102,7 @@ class _ChatBotPageState extends State<ChatBotPage> with SingleTickerProviderStat
             LlmChatView(
               provider: _provider,
               style: style,
-              welcomeMessage: 'Welcome to FitNow!',
+              welcomeMessage: 'Welcome to FitNow',
             ),
           ],
         ),
@@ -109,6 +110,12 @@ class _ChatBotPageState extends State<ChatBotPage> with SingleTickerProviderStat
     );
   }
   LlmChatViewStyle get style {
+    final TextStyle textStyle = TextStyle(
+      color: white,
+      fontSize: 14,
+      fontFamily: 'ReadexPro-Medium'
+    );
+
     return LlmChatViewStyle(
       backgroundColor: white,
       progressIndicatorColor: darkBlue,
@@ -186,6 +193,10 @@ class _ChatBotPageState extends State<ChatBotPage> with SingleTickerProviderStat
             ),
           ]
         ),
+        markdownStyle: MarkdownStyleSheet(
+          p: textStyle,
+          listBullet: textStyle,
+        )
       )
     );
   }
