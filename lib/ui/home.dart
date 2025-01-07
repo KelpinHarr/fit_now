@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_now/models/Workout.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:fit_now/components/bottom_navbar.dart';
 import 'package:fit_now/constants.dart';
-import 'package:fit_now/ui/chat.dart';
 import 'package:fit_now/ui/chatbot.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   final String email;
@@ -19,11 +23,27 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   String _name = '';
+  Future<List<Workout>>? _futureWorkout;
+  SharedPreferences? _prefs;
+  String? _selectedMuscle;
 
   @override
   void initState(){
     super.initState();
     getUser();
+    // _futureWorkout = fetchWorkout(workouts)
+    _loadSavedMuscle();
+  }
+
+  Future<void> _loadSavedMuscle() async {
+    _prefs = await SharedPreferences.getInstance();
+    final savedMuscle = _prefs?.getString('selectedMuscle');
+    if (savedMuscle != null) {
+      setState(() {
+        _selectedMuscle = savedMuscle;
+        _futureWorkout = fetchWorkout(savedMuscle);
+      });
+    }
   }
 
   Future<void> getUser() async {
@@ -55,76 +75,90 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showCategoryDialog(BuildContext context) {
-    Map<String, bool> selectedCategories = {
-      'Upper Body': false,
-      'Arms & Shoulder': false,
-      'Chest': false,
-      'Back': false,
-      'Lower Body': false,
-      'Glutes & Hamstring': false,
-      'Core Body': false,
-    };
-
+    String? selectedCategory;
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return StatefulBuilder(
-          builder: (context, setState) {
-            return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              child: Container(
-                padding: EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
+          builder: (context, setDialogState) {
+            return SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ...selectedCategories.keys.map((category) {
-                      return CheckboxListTile(
-                        title: Text(
-                          category,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        value: selectedCategories[category],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            selectedCategories[category] = value ?? false;
-                          });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
-                        activeColor: Colors.orange,
-                        checkColor: Colors.white,
-                      );
-                    }).toList(),
-                    SizedBox(height: 20.0),
-                    Align(
-                      alignment: Alignment.center,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          print("Selected Categories: $selectedCategories");
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                child: Container(
+                  padding: EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: blue,
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...[
+                        'Abdominals',
+                        'Abductors',
+                        'Adductor',
+                        'Biceps',
+                        'Calves',
+                        'Chest',
+                        'Forearms',
+                        'Glutes',
+                        'Hamstrings',
+                        'Lower Back',
+                        'Middle Back',
+                        'Neck',
+                        'Quadriceps',
+                        'Traps',
+                        'Triceps',
+                      ].map((category) {
+                        return RadioListTile<String>(
+                          title: Text(
+                            category,
+                            style: TextStyle(color: white),
                           ),
-                        ),
-                        child: Text(
-                          'Submit',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                          value: category,
+                          groupValue: selectedCategory,
+                          onChanged: (String? value) {
+                            setDialogState(() {
+                              selectedCategory = value;
+                            });
+                          },
+                          activeColor: orange,
+                        );
+                      }).toList(),
+                      SizedBox(height: 20.0),
+                      Align(
+                        alignment: Alignment.center,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (selectedCategory != null) {
+                              setState(() {
+                                _selectedMuscle = selectedCategory!.toLowerCase();
+                                _futureWorkout = fetchWorkout(selectedCategory!.toLowerCase());
+                              });
+                              _prefs?.setString('selectedMuscle', selectedCategory!);
+                              Navigator.pop(dialogContext);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: orange,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          child: Text(
+                            'Submit',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -132,6 +166,56 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  Future<List<Workout>> fetchWorkout(String workouts) async {
+    List<Workout> workout = [];
+    try {
+      final url = Uri.parse("https://exercises-by-api-ninjas.p.rapidapi.com/v1/exercises");
+
+      final headers = {
+        "x-rapidapi-key" : "8db5a54b0emshbac83e362f217b9p12c273jsn16672e7e1ddd",
+        "x-rapidapi-host" : "exercises-by-api-ninjas.p.rapidapi.com"
+      };
+
+      final params = {"muscle" : workouts};
+
+      final response = await http.get(url.replace(queryParameters: params), headers: headers);
+
+      if (response.statusCode == 200){
+        final List<dynamic> data = jsonDecode(response.body);
+        print(data);
+        workout = data.map((item) => Workout(
+          name: item['name'], 
+          type: item['type'], 
+          muscle: item['muscle'], 
+          equipment: item['equipment'], 
+          difficulty: item['difficulty'], 
+          instructions: item['instructions']
+        )).toList();
+      }
+      else {
+        Fluttertoast.showToast(
+          msg: 'Error :${response.statusCode}',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white,
+          backgroundColor: Colors.orange,
+          fontSize: 14
+        );
+      }
+    }
+    catch(e){
+      Fluttertoast.showToast(
+        msg: 'Error :$e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        textColor: Colors.white,
+        backgroundColor: Colors.orange,
+        fontSize: 14
+      );
+    }
+    return workout;
   }
 
   @override
@@ -246,6 +330,61 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: FutureBuilder<List<Workout>>(
+                future: _futureWorkout, 
+                builder: (context, snapshot){
+                  if (snapshot.connectionState == ConnectionState.waiting){
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  else if (snapshot.hasError){
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  else if (!snapshot.hasData || snapshot.data!.isEmpty){
+                    return Center(child: Text("There's no target muscle yet"));
+                  }
+                  final workouts = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: workouts.length,
+                    itemBuilder: (context, index){
+                      final workout = workouts[index];
+                      return Padding(
+                        padding: EdgeInsets.only(left: 17, right: 17),
+                        child: Card(
+                          color: blue,
+                          child: ListTile(
+                            title: Text(
+                              workout.name,
+                              style: TextStyle(
+                                color: white,
+                                fontFamily: 'ReadexPro-Medium',
+                                fontSize: 16
+                              ),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Text(
+                                'Type: ${workout.type}\nMuscle: ${workout.muscle}',
+                                style: TextStyle(
+                                  fontFamily: 'ReadexPro-Medium',
+                                  fontSize: 14,
+                                  color: Colors.grey[400]
+                                ),
+                              ),
+                            ),
+                            trailing: Icon(
+                              Iconsax.arrow_right_3,
+                              color: white,
+                            ),
+                          )
+                        ),
+                      );
+                    }
+                  );
+                }
+              )
             )
           ],
         ),
