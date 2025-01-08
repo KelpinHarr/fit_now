@@ -1,8 +1,10 @@
+import 'package:fit_now/bloc/workout_bloc.dart';
 import 'package:fit_now/config/config.dart';
 import 'package:fit_now/session_helper.dart';
 import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +54,13 @@ class MyApp extends StatelessWidget {
           }
 
           return MaterialApp(
-            home: home,
+            home: BlocProvider(
+              create: (context) => WorkoutBloc(
+                initialCheckboxStates: ModalRoute.of(context)?.settings.arguments as List<bool>, 
+                email: userEmail
+              ),
+              child: home,
+            ),
             debugShowCheckedModeBanner: false,
           );
         }
