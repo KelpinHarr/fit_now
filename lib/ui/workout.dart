@@ -48,6 +48,10 @@ class _WorkoutPageState extends State<WorkoutPage> {
           final title = data['title'];
           final url = data['url'];
           final creator = data['creator'];
+          final List<String> menu = (data['menu'] as List<dynamic>)
+              .map((item) => item.toString())
+              .toList();
+              
           String videoId = '';
 
           if (url.contains("youtu.be")) {
@@ -59,7 +63,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
             url: url, 
             title: title, 
             creator: creator,
-            videoId: videoId
+            videoId: videoId,
+            menu: menu
           ));
         }
       }
@@ -232,7 +237,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
                   }
                 }
               )
-            )
+            ),
+
           ],
         )
       ),

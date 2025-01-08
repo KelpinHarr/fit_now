@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_now/models/Workout.dart';
+import 'package:fit_now/ui/target_muscle_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -378,7 +379,13 @@ class _HomePageState extends State<HomePage> {
                               Iconsax.arrow_right_3,
                               color: white,
                             ),
-                          )
+                            onTap: (){
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(builder: (context) => TargetMuscleDetailPage(workout: workout))
+                              );
+                            },
+                          ),
                         ),
                       );
                     }
