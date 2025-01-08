@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_now/bloc/workout_bloc.dart';
 import 'package:fit_now/components/bottom_navbar.dart';
 import 'package:fit_now/constants.dart';
 import 'package:fit_now/models/Video.dart';
 import 'package:fit_now/ui/chat.dart';
 import 'package:fit_now/ui/workout_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -190,7 +192,15 @@ class _WorkoutPageState extends State<WorkoutPage> {
                           onTap: (){
                             Navigator.push(
                               context, 
-                              MaterialPageRoute(builder: (context) => WorkoutDetail(video: video))
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                  create: (context) => WorkoutBloc(
+                                    initialCheckboxStates: List.generate(video.menu.length, (index) => false), 
+                                    email: widget.email
+                                  ),
+                                  child: WorkoutDetail(video: video, email: widget.email),
+                                )
+                              )
                             );
                           },
                           child: Padding(
