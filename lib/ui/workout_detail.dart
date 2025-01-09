@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../bloc/workout_bloc.dart';
@@ -22,6 +23,7 @@ class WorkoutDetail extends StatefulWidget {
 class _WorkoutDetailState extends State<WorkoutDetail> {
   String? videoId;
   YoutubePlayerController? _controller;
+  SharedPreferences? _pref;
 
   List<bool> checkboxStates = [];
 
@@ -38,12 +40,54 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
     );
 
     workoutItems = widget.video.menu;
+    _initializePreferences();
   }
 
   @override
   void dispose() {
     _controller?.dispose();
     super.dispose();
+  }
+
+  Future<void> _initializePreferences() async {
+    _pref = await SharedPreferences.getInstance();
+    _loadSavedCheckboxStates();
+  }
+
+  Future<void> _loadSavedCheckboxStates() async {
+    final key = '${widget.email}_${widget.video.url}_checkboxStates';
+    final savedStates = _pref?.getStringList(key);
+    
+    if (savedStates != null) {
+      final states = savedStates.map((s) => s == 'true').toList();
+      setState(() {
+        checkboxStates = states;
+      });
+      context.read<WorkoutBloc>().add(
+        LoadSavedCheckboxStates(
+          states: states,
+          videoUrl: widget.video.url
+        )
+      );
+    } 
+    else {
+      final initialStates = List.generate(workoutItems.length, (index) => false);
+      setState(() {
+        checkboxStates = initialStates;
+      });
+      context.read<WorkoutBloc>().add(
+        LoadSavedCheckboxStates(
+          states: initialStates,
+          videoUrl: widget.video.url
+        )
+      );
+    }
+  }
+
+  Future<void> _saveCheckboxStates(List<bool> states) async {
+    final key = '${widget.email}_${widget.video.url}_checkboxStates';
+    final stateStrings = states.map((b) => b.toString()).toList();
+    await _pref?.setStringList(key, stateStrings);
   }
 
   @override
@@ -85,7 +129,10 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
         ),
       ),
       body: SafeArea(
-        child: BlocBuilder<WorkoutBloc, WorkoutState>(
+        child: BlocConsumer<WorkoutBloc, WorkoutState>(
+          listener: (context, state){
+            _saveCheckboxStates(state.checkboxStates);
+          },
           builder: (context, state){
             return Padding(
               padding: const EdgeInsets.only(top: 30, left: 20, right: 10),
@@ -173,12 +220,10 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
                                     index: index,
                                     value: value ?? false,
                                     videoUrl: widget.video.url,
+                                    email: widget.email,
                                     allCheckboxStates: List.generate(workoutItems.length, (index) => false)
                                   )
                                 );
-                                // setState(() {
-                                //   checkboxStates[index] = value!;
-                                // });
                               },
                               activeColor: orange,
                               checkColor: white,

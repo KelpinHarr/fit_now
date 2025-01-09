@@ -1,11 +1,11 @@
-class WatchedVideo{
-  final String url;
-  final String video_id;
+import 'package:fit_now/models/Video.dart';
 
- WatchedVideo({
-  required this.url,
-  required this.video_id
- });
+class WatchedVideo {
+  final Video video;
 
- String get thumbnailUrl => "https://img.youtube.com/vi/$video_id/hqdefault.jpg";
+  WatchedVideo({
+    required this.video
+  });
+
+  String get thumbnailUrl => "https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg";
 }

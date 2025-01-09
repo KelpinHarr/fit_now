@@ -14,4 +14,14 @@ class Video {
   });
 
   String get thumbnailUrl => "https://img.youtube.com/vi/$videoId/hqdefault.jpg";
+
+  factory Video.fromFirestore(Map<String, dynamic> data) {
+    return Video(
+      url: data['url'] ?? '',
+      title: data['title'] ?? '',
+      creator: data['creator'] ?? '',
+      videoId: data['videoId'] ?? '',
+      menu: List<String>.from(data['menu'] ?? []),
+    );
+  }
 }
