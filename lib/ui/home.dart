@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_now/models/WatchedVideo.dart';
 import 'package:fit_now/models/Workout.dart';
 import 'package:fit_now/ui/target_muscle_detail.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fit_now/components/bottom_navbar.dart';
@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   String _name = '';
   Future<List<Workout>>? _futureWorkout;
+  Future<List<WatchedVideo>>? _futureWatchedVideo;
   SharedPreferences? _prefs;
   String? _selectedMuscle;
 
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   void initState(){
     super.initState();
     getUser();
-    // _futureWorkout = fetchWorkout(workouts)
+    _futureWatchedVideo = _watchedVideo();
     _loadSavedMuscle();
   }
 
@@ -45,6 +46,43 @@ class _HomePageState extends State<HomePage> {
         _futureWorkout = fetchWorkout(savedMuscle);
       });
     }
+  }
+
+  Future<List<WatchedVideo>> _watchedVideo() async {
+    List<WatchedVideo> videos = [];
+    try {
+      final firestore = FirebaseFirestore.instance;
+      final videoDocs = await firestore
+          .collection('users')
+          .where('email', isEqualTo: widget.email)
+          .get();
+
+      if (videoDocs.docs.isNotEmpty){
+        final video = videoDocs.docs.first;
+        final List<dynamic> watched_videos = video['watched_videos'] ?? [];
+
+        for (var watchedVideo in watched_videos) {
+          String videoId = '';
+
+          if (watchedVideo.contains("youtu.be")) {
+            var parts = watchedVideo.split('/');
+            videoId = parts.last.split('?').first;
+          }
+          videos.add(WatchedVideo(url: watchedVideo, video_id: videoId));
+        }
+      }
+    }
+    catch(e){
+      Fluttertoast.showToast(
+        msg: 'Error :$e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        textColor: Colors.white,
+        backgroundColor: Colors.orange,
+        fontSize: 14
+      );
+    }
+    return videos;
   }
 
   Future<void> getUser() async {
@@ -277,19 +315,47 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 15),
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Text(
-                'There\'s no previous session',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'OpenSans'
-                ),
+            Expanded(
+              child: FutureBuilder<List<WatchedVideo>>(
+                future: _futureWatchedVideo, 
+                builder: (context, snapshot){
+                  if (snapshot.connectionState == ConnectionState.waiting){
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  else if (snapshot.hasError){
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  else if (!snapshot.hasData || snapshot.data!.isEmpty){
+                    return Center(child: Text("There's no previous session"));
+                  }
+                  final videos = snapshot.data!;
+                  return Container(
+                    width: MediaQuery.of(context).size.width - 30,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: videos.length,
+                        itemBuilder: (context, index){
+                          final video = videos[index];
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.network(
+                                video.thumbnailUrl,
+                                scale: 2,
+                              ),
+                              SizedBox(width: 10),
+                            ],
+                          );
+                        }
+                      ),
+                    ),
+                  );
+                }
               ),
-            ), //sementara sblm nambah list view
-            SizedBox(height: 25),
+            ),
+            // SizedBox(height: 25),
             Padding(
               padding: EdgeInsets.only(left: 20),
               child: Text(
