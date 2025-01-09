@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_now/bloc/workout_bloc.dart';
+import 'package:fit_now/models/Video.dart';
 import 'package:fit_now/models/WatchedVideo.dart';
 import 'package:fit_now/models/Workout.dart';
 import 'package:fit_now/ui/target_muscle_detail.dart';
+import 'package:fit_now/ui/workout_detail.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fit_now/components/bottom_navbar.dart';
@@ -49,40 +53,55 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<WatchedVideo>> _watchedVideo() async {
-    List<WatchedVideo> videos = [];
-    try {
-      final firestore = FirebaseFirestore.instance;
-      final videoDocs = await firestore
-          .collection('users')
-          .where('email', isEqualTo: widget.email)
-          .get();
+      List<WatchedVideo> watchedVideos = [];
+      try {
+        final firestore = FirebaseFirestore.instance;
+        final userDocs = await firestore
+            .collection('users')
+            .where('email', isEqualTo: widget.email)
+            .get();
 
-      if (videoDocs.docs.isNotEmpty){
-        final video = videoDocs.docs.first;
-        final List<dynamic> watched_videos = video['watched_videos'] ?? [];
+        if (userDocs.docs.isNotEmpty) {
+          final video = userDocs.docs.first;
+          final List<dynamic> watchedVideoUrl = video['watched_videos'] ?? [];
 
-        for (var watchedVideo in watched_videos) {
-          String videoId = '';
+          for (var videoUrl in watchedVideoUrl) {
+            String videoId = '';
+            if (videoUrl.contains("youtu.be")) {
+              var parts = videoUrl.split('/');
+              videoId = parts.last.split('?').first;
+            }
 
-          if (watchedVideo.contains("youtu.be")) {
-            var parts = watchedVideo.split('/');
-            videoId = parts.last.split('?').first;
+            final videoDoc = await firestore
+                .collection('videos')
+                .where('url', isEqualTo: videoUrl)
+                .get();
+            
+            if (videoDoc.docs.isNotEmpty){
+              final videoData = videoDoc.docs.first.data();
+
+              final video = Video(
+                url: videoData['url'], 
+                title: videoData['title'], 
+                creator: videoData['creator'], 
+                videoId: videoId, 
+                menu: List<String>.from(videoData['menu'])
+              );
+
+              watchedVideos.add(WatchedVideo(video: video));
+            }
           }
-          videos.add(WatchedVideo(url: watchedVideo, video_id: videoId));
         }
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: 'Error: $e',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            textColor: Colors.white,
+            backgroundColor: Colors.orange,
+            fontSize: 14);
       }
-    }
-    catch(e){
-      Fluttertoast.showToast(
-        msg: 'Error :$e',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        textColor: Colors.white,
-        backgroundColor: Colors.orange,
-        fontSize: 14
-      );
-    }
-    return videos;
+      return watchedVideos;
   }
 
   Future<void> getUser() async {
@@ -341,9 +360,29 @@ class _HomePageState extends State<HomePage> {
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Image.network(
-                                video.thumbnailUrl,
-                                scale: 2,
+                              GestureDetector(
+                                onTap: (){
+                                  // Navigator.push(
+                                  //   context, 
+                                  //   MaterialPageRoute(builder: (context) => WorkoutDetail(video: video.video, email: widget.email))
+                                  // );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (context) => WorkoutBloc(
+                                          initialCheckboxStates: List.generate(video.video.menu.length, (index) => false), 
+                                          email: widget.email
+                                        ),
+                                        child: WorkoutDetail(video: video.video, email: widget.email),
+                                      )
+                                    )
+                                  );
+                                },
+                                child: Image.network(
+                                  video.thumbnailUrl,
+                                  scale: 2,
+                                ),
                               ),
                               SizedBox(width: 10),
                             ],
@@ -355,7 +394,6 @@ class _HomePageState extends State<HomePage> {
                 }
               ),
             ),
-            // SizedBox(height: 25),
             Padding(
               padding: EdgeInsets.only(left: 20),
               child: Text(

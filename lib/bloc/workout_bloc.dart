@@ -27,6 +27,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         super(InitialWorkoutState(checkboxStates: initialCheckboxStates)) {
     on<UpdateCheckbox>(_onUpdateCheckbox);
     on<ResetWorkout>(_onResetWorkout);
+    on<LoadSavedCheckboxStates>(_onLoadSavedCheckboxStates);
   }
 
   Future<void> _onUpdateCheckbox(UpdateCheckbox event, Emitter<WorkoutState> emit) async {
@@ -69,6 +70,14 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       checkboxStates: newCheckboxStates,
       remainingReps: newRemainingReps,
       isCompleted: isCompleted,
+    ));
+  }
+
+  void _onLoadSavedCheckboxStates(LoadSavedCheckboxStates event, Emitter<WorkoutState> emit) {
+    emit(ConcreteWorkoutState(
+      checkboxStates: event.states,
+      remainingReps: state.remainingReps,
+      isCompleted: state.isCompleted,
     ));
   }
 
