@@ -33,7 +33,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     final newCheckboxStates = List<bool>.from(state.checkboxStates);
     newCheckboxStates[event.index] = event.value;
     
-    // Mengecek apakah ini pertama kali checkbox dicentang
     if (event.value) {
       try {
         final userDocs = await _firestore
@@ -52,7 +51,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       }
     }
 
-    // Logika untuk mengecek apakah semua checkbox sudah dicentang
     bool allChecked = newCheckboxStates.every((state) => state == true);
     int newRemainingReps = state.remainingReps;
     bool isCompleted = state.isCompleted;
@@ -73,47 +71,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       isCompleted: isCompleted,
     ));
   }
-
-  // Future<void> _onUpdateCheckbox(UpdateCheckbox event, Emitter<WorkoutState> emit) async {
-  //   // print("Current state: ${state.checkboxStates}");
-  //   final newCheckboxStates = List<bool>.from(state.checkboxStates);
-  //   newCheckboxStates[event.index] = event.value;
-
-  //   bool allChecked = newCheckboxStates.every((state) => state == true);
-  //   // print("All checked: $allChecked");
-
-  //   int newRemainingReps = state.remainingReps;
-  //   bool isCompleted = state.isCompleted;
-
-  //   if (allChecked) {
-  //     // print("Reducing reps from: ${state.remainingReps}");
-  //     newRemainingReps = state.remainingReps - 1;
-
-  //     if (newRemainingReps <= 0) {
-  //       isCompleted = true;
-  //       final userDocs = await _firestore
-  //           .collection('users')
-  //           .where('email', isEqualTo: email)
-  //           .get();
-  //       if (userDocs.docs.isNotEmpty) {
-  //         final user = userDocs.docs.first;
-  //         await _firestore.collection('users').doc(user.id).update({
-  //           'watched_videos': FieldValue.arrayUnion([event.videoUrl])
-  //         });
-  //       }
-  //     }
-
-  //     if (newRemainingReps > 0) {
-  //       newCheckboxStates.fillRange(0, newCheckboxStates.length, false);
-  //     }
-  //   }
-
-  //   emit(InitialWorkoutState(
-  //     checkboxStates: newCheckboxStates,
-  //     remainingReps: newRemainingReps,
-  //     isCompleted: isCompleted,
-  //   ));
-  // }
 
   void _onResetWorkout(
     ResetWorkout event,
