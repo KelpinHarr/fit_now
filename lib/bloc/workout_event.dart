@@ -37,4 +37,17 @@ class LoadSavedCheckboxStates extends WorkoutEvent {
   List<Object> get props => [states, videoUrl];
 }
 
+class UpdateRemainingReps extends WorkoutEvent{
+  final int remainingReps;
+  final String videoUrl;
+
+  const UpdateRemainingReps({
+    required this.remainingReps,
+    required this.videoUrl
+  });
+
+  @override
+  List<Object> get props => [remainingReps, videoUrl];
+}
+
 class ResetWorkout extends WorkoutEvent{}

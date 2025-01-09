@@ -51,7 +51,27 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
 
   Future<void> _initializePreferences() async {
     _pref = await SharedPreferences.getInstance();
-    _loadSavedCheckboxStates();
+    await _loadSavedCheckboxStates();
+    await _loadSavedRemainingReps();
+  }
+
+  Future<void> _saveRemainingReps(int reps) async {
+    final key = '${widget.email}_${widget.video.url}_remainingReps';
+    await _pref?.setInt(key, reps);
+  }
+
+  Future<void> _loadSavedRemainingReps() async {
+    final key = '${widget.email}_${widget.video.url}_remainingReps';
+    final savedReps = _pref?.getInt(key);
+    
+    if (savedReps != null) {
+      context.read<WorkoutBloc>().add(
+        UpdateRemainingReps(
+          remainingReps: savedReps,
+          videoUrl: widget.video.url
+        )
+      );
+    }
   }
 
   Future<void> _loadSavedCheckboxStates() async {
@@ -132,6 +152,7 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
         child: BlocConsumer<WorkoutBloc, WorkoutState>(
           listener: (context, state){
             _saveCheckboxStates(state.checkboxStates);
+            _saveRemainingReps(state.remainingReps);
           },
           builder: (context, state){
             return Padding(
@@ -148,31 +169,42 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Container(
-                      width: MediaQuery.of(context).size.width - 50,
-                      child: YoutubePlayerBuilder(
-                        player: YoutubePlayer(
-                          controller: _controller!,
-                          showVideoProgressIndicator: true,
-                          progressIndicatorColor: white,
-                          progressColors: const ProgressBarColors(
-                              playedColor: white, handleColor: white),
-                          onReady: () {
-                            _controller!.addListener(() {});
-                          },
-                          onEnded: (metadata) {
-                            SystemChrome.setPreferredOrientations([
-                              DeviceOrientation.portraitUp,
-                              DeviceOrientation.portraitDown,
-                            ]);
-                          },
+                    YoutubePlayerBuilder(
+                      onEnterFullScreen: (){
+                        SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.landscapeLeft,
+                          DeviceOrientation.landscapeRight
+                        ]);
+                      },
+                      onExitFullScreen: (){
+                        SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitUp,
+                          DeviceOrientation.portraitDown
+                        ]);
+                      },
+                      player: YoutubePlayer(
+                        controller: _controller!,
+                        showVideoProgressIndicator: true,
+                        progressIndicatorColor: white,
+                        progressColors: const ProgressBarColors(
+                          playedColor: white, handleColor: white
                         ),
-                        builder: (context, player) {
-                          return Column(
-                            children: [player],
-                          );
-                        }
+                        onReady: () {
+                          _controller!.addListener(() {});
+                        },
+                        onEnded: (metadata) {
+                          SystemChrome.setPreferredOrientations([
+                            DeviceOrientation.portraitUp,
+                            DeviceOrientation.portraitDown,
+                          ]);
+                        },
                       ),
+                      builder: (context, player) {
+                        return AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: player,
+                        );
+                      }
                     ),
                     SizedBox(height: 20),
                     Text(

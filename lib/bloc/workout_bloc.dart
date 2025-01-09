@@ -9,25 +9,22 @@ class InitialWorkoutState extends WorkoutState {
     int remainingReps = 3,
     bool isCompleted = false,
   }) : super(
-          checkboxStates: checkboxStates,
-          remainingReps: remainingReps,
-          isCompleted: isCompleted,
-        );
+    checkboxStates: checkboxStates,
+    remainingReps: remainingReps,
+    isCompleted: isCompleted,
+  );
 }
 
 class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   final FirebaseFirestore _firestore;
   final String email;
 
-  WorkoutBloc({
-    required List<bool> initialCheckboxStates,
-    required String email,
-  })  : _firestore = FirebaseFirestore.instance,
-        email = email,
-        super(InitialWorkoutState(checkboxStates: initialCheckboxStates)) {
-    on<UpdateCheckbox>(_onUpdateCheckbox);
-    on<ResetWorkout>(_onResetWorkout);
-    on<LoadSavedCheckboxStates>(_onLoadSavedCheckboxStates);
+  WorkoutBloc({required List<bool> initialCheckboxStates, required String email}) : _firestore = FirebaseFirestore.instance, email = email,
+    super(InitialWorkoutState(checkboxStates: initialCheckboxStates)) {
+      on<UpdateCheckbox>(_onUpdateCheckbox);
+      on<ResetWorkout>(_onResetWorkout);
+      on<LoadSavedCheckboxStates>(_onLoadSavedCheckboxStates);
+      on<UpdateRemainingReps>(_onUpdateRemainingReps);
   }
 
   Future<void> _onUpdateCheckbox(UpdateCheckbox event, Emitter<WorkoutState> emit) async {
@@ -78,6 +75,14 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       checkboxStates: event.states,
       remainingReps: state.remainingReps,
       isCompleted: state.isCompleted,
+    ));
+  }
+
+  void _onUpdateRemainingReps(UpdateRemainingReps event, Emitter<WorkoutState> emit){
+    emit(ConcreteWorkoutState(
+      checkboxStates: state.checkboxStates,
+      remainingReps: event.remainingReps,
+      isCompleted: event.remainingReps <= 0
     ));
   }
 
