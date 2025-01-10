@@ -38,7 +38,6 @@ class TargetMuscleDetailPage extends StatelessWidget {
         mainInstruction = instructions;
       }
     } catch (e) {
-      // Fallback if any error occurs
       mainInstruction = workout.instructions;
     }
 

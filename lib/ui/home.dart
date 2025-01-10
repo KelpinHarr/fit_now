@@ -276,102 +276,99 @@ class _HomePageState extends State<HomePage> {
     return workout;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: white,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 30, left: 20),
-              child: _name == '' 
-                ? Text(
-                    'Welcome, ${widget.name}!',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontFamily: 'ReadexPro-Medium',
-                      fontWeight: FontWeight.bold
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: white,
+    body: SafeArea(
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.height
+              : MediaQuery.of(context).size.height * 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 30, left: 20),
+                child: _name == '' 
+                  ? Text(
+                      'Welcome, ${widget.name}!',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontFamily: 'ReadexPro-Medium',
+                        fontWeight: FontWeight.bold
+                      ),
+                    )
+                  : Text(
+                      'Welcome, ${_name}!',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontFamily: 'ReadexPro-Medium',
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
-                  )
-                :
-                Text(
-                  'Welcome, ${_name}!',
+              ),
+              SizedBox(height: 5),
+              Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Text(
+                  'It\'s a new day to achieve new milestones.\nLet\'s get moving!',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: 'ReadexPro-Medium',
-                    fontWeight: FontWeight.bold
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'ReadexPro-Medium'
                   ),
                 ),
-            ),
-            SizedBox(height: 5),
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Text(
-                'It\'s a new day to achieve new milestones.\nLet\'s get moving!',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'ReadexPro-Medium'
+              ),
+              SizedBox(height: 35),
+              Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Text(
+                  'Your previous session',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'ReadexPro-Medium'
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 35),
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Text(
-                'Your previous session',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'ReadexPro-Medium'
-                ),
-              ),
-            ),
-            SizedBox(height: 15),
-            Expanded(
-              child: FutureBuilder<List<WatchedVideo>>(
-                future: _futureWatchedVideo, 
-                builder: (context, snapshot){
-                  if (snapshot.connectionState == ConnectionState.waiting){
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  else if (snapshot.hasError){
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  else if (!snapshot.hasData || snapshot.data!.isEmpty){
-                    return Center(child: Text("There's no previous session"));
-                  }
-                  final videos = snapshot.data!;
-                  return Container(
-                    width: MediaQuery.of(context).size.width - 30,
-                    child: Padding(
+              SizedBox(height: 15),
+              SizedBox(
+                height: 200,
+                child: FutureBuilder<List<WatchedVideo>>(
+                  future: _futureWatchedVideo,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text("There's no previous session"));
+                    }
+                    final videos = snapshot.data!;
+                    return Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: videos.length,
-                        itemBuilder: (context, index){
+                        itemBuilder: (context, index) {
                           final video = videos[index];
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               GestureDetector(
-                                onTap: (){
-                                  // Navigator.push(
-                                  //   context, 
-                                  //   MaterialPageRoute(builder: (context) => WorkoutDetail(video: video.video, email: widget.email))
-                                  // );
+                                onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => BlocProvider(
                                         create: (context) => WorkoutBloc(
-                                          initialCheckboxStates: List.generate(video.video.menu.length, (index) => false), 
+                                          initialCheckboxStates: List.generate(video.video.menu.length, (index) => false),
                                           email: widget.email
                                         ),
                                         child: WorkoutDetail(video: video.video, email: widget.email),
@@ -381,7 +378,7 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 child: Image.network(
                                   video.thumbnailUrl,
-                                  scale: 2,
+                                  scale: 1,
                                 ),
                               ),
                               SizedBox(width: 10),
@@ -389,152 +386,154 @@ class _HomePageState extends State<HomePage> {
                           );
                         }
                       ),
-                    ),
-                  );
-                }
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Text(
-                'Ready for a workout designed just for you? Our AI\ncan create custom plans based on your goals',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'ReadexPro-Medium'
+                    );
+                  }
                 ),
               ),
-            ),
-            SizedBox(height: 25),
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Container(
-                width: 300,
-                child: ElevatedButton(
-                  onPressed: (){
-                    _showCategoryDialog(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: orange,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.fromHeight(55)
-                  ),
-                  child: Text(
-                    'Choose your target muscle group',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'ReadexPro-Medium'
-                    ),
+              SizedBox(height: 5),
+              Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Text(
+                  'Ready for a workout designed just for you? Our AI\ncan create custom plans based on your goals',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'ReadexPro-Medium'
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: FutureBuilder<List<Workout>>(
-                future: _futureWorkout, 
-                builder: (context, snapshot){
-                  if (snapshot.connectionState == ConnectionState.waiting){
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  else if (snapshot.hasError){
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  else if (!snapshot.hasData || snapshot.data!.isEmpty){
-                    return Center(child: Text("There's no target muscle yet"));
-                  }
-                  final workouts = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: workouts.length,
-                    itemBuilder: (context, index){
-                      final workout = workouts[index];
-                      return Padding(
-                        padding: EdgeInsets.only(left: 17, right: 17),
-                        child: Card(
-                          color: blue,
-                          child: ListTile(
-                            title: Text(
-                              workout.name,
-                              style: TextStyle(
-                                color: white,
-                                fontFamily: 'ReadexPro-Medium',
-                                fontSize: 16
-                              ),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Text(
-                                'Type: ${workout.type}\nMuscle: ${workout.muscle}',
+              SizedBox(height: 25),
+              Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Container(
+                  width: 300,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _showCategoryDialog(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: orange,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.fromHeight(55)
+                    ),
+                    child: Text(
+                      'Choose your target muscle group',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'ReadexPro-Medium'
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              SizedBox(
+                height: 300,
+                child: FutureBuilder<List<Workout>>(
+                  future: _futureWorkout,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text("There's no target muscle yet"));
+                    }
+                    final workouts = snapshot.data!;
+                    return ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: workouts.length,
+                      itemBuilder: (context, index) {
+                        final workout = workouts[index];
+                        return Padding(
+                          padding: EdgeInsets.only(left: 17, right: 17),
+                          child: Card(
+                            color: blue,
+                            child: ListTile(
+                              title: Text(
+                                workout.name,
                                 style: TextStyle(
+                                  color: white,
                                   fontFamily: 'ReadexPro-Medium',
-                                  fontSize: 14,
-                                  color: Colors.grey[400]
+                                  fontSize: 16
                                 ),
                               ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 15),
+                                child: Text(
+                                  'Type: ${workout.type}\nMuscle: ${workout.muscle}',
+                                  style: TextStyle(
+                                    fontFamily: 'ReadexPro-Medium',
+                                    fontSize: 14,
+                                    color: Colors.grey[400]
+                                  ),
+                                ),
+                              ),
+                              trailing: Icon(
+                                Iconsax.arrow_right_3,
+                                color: white,
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => TargetMuscleDetailPage(workout: workout))
+                                );
+                              },
                             ),
-                            trailing: Icon(
-                              Iconsax.arrow_right_3,
-                              color: white,
-                            ),
-                            onTap: (){
-                              Navigator.push(
-                                context, 
-                                MaterialPageRoute(builder: (context) => TargetMuscleDetailPage(workout: workout))
-                              );
-                            },
                           ),
-                        ),
-                      );
-                    }
-                  );
-                }
+                        );
+                      }
+                    );
+                  }
+                )
               )
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: SizedBox(
-        height: 70,
-        width: 70,
-        child: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _currentIndex = 2;
-            });
-            Navigator.push(
-              context, 
-              MaterialPageRoute(builder: (context) => ChatBotPage(email: widget.email)), 
-            );
-          },
-          backgroundColor: darkBlue,
-          child: Icon(
-            Iconsax.messages_1, 
-            color: _currentIndex == 2 ? orange : white,
-            size: 35,
+            ],
           ),
-          shape: CircleBorder(),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex, 
-        onTabSelected: (index){
+    ),
+    floatingActionButton: SizedBox(
+      height: 70,
+      width: 70,
+      child: FloatingActionButton(
+        onPressed: () {
           setState(() {
-            _currentIndex = index;
+            _currentIndex = 2;
           });
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatBotPage(email: widget.email)),
+          );
         },
-        selectedColor: orange,
-        unselectedColor: white,
         backgroundColor: darkBlue,
-        email: widget.email,
-      )
-    );
-  }
+        child: Icon(
+          Iconsax.messages_1,
+          color: _currentIndex == 2 ? orange : white,
+          size: 35,
+        ),
+        shape: CircleBorder(),
+      ),
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    bottomNavigationBar: CustomBottomNavBar(
+      currentIndex: _currentIndex,
+      onTabSelected: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      selectedColor: orange,
+      unselectedColor: white,
+      backgroundColor: darkBlue,
+      email: widget.email,
+    )
+  );
+}
 }
