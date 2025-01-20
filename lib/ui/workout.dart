@@ -117,16 +117,28 @@ class _WorkoutPageState extends State<WorkoutPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20),
-              child: Text(
-                'Choose your focus!',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'ReadexPro-Medium',
-                  fontSize: 16
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 20),
+                  child: Text(
+                    'Choose your focus!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'ReadexPro-Medium',
+                      fontSize: 16
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20, right: 20),
+                  child: IconButton(
+                    onPressed: (){}, 
+                    icon: Icon(Iconsax.camera)
+                  ),
+                )
+              ],
             ),
             SizedBox(height: 15),
             Padding(
