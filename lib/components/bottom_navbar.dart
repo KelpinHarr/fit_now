@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_now/session_helper.dart';
 import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/login_screen.dart';
+import 'package:fit_now/ui/report.dart';
 import 'package:fit_now/ui/workout.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -90,7 +91,13 @@ class CustomBottomNavBar extends StatelessWidget {
               (Route<dynamic> route) => false
             );
             break;
-          
+          case 3:
+            Navigator.pushAndRemoveUntil(
+              context, 
+              MaterialPageRoute(builder: (context)=> ReportPage(email: email)), 
+              (Route<dynamic> route) => false
+            );
+            break;
           case 4 :
             await SessionHelper.clearLoginStatus();
             // await logoutFromGoogle();
