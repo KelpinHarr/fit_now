@@ -281,37 +281,6 @@ class _ChatPageState extends State<ChatPage> {
           ),
         // )
       ),
-      // floatingActionButton: SizedBox(
-      //   height: 70,
-      //   width: 70,
-      //   child: FloatingActionButton(
-      //     onPressed: () {
-      //       setState(() {
-      //         _currentIndex = 2;
-      //       });
-      //     },
-      //     backgroundColor: darkBlue,
-      //     child: Icon(
-      //       Iconsax.messages_1, 
-      //       color: _currentIndex == 2 ? orange : white,
-      //       size: 35,
-      //     ),
-      //     shape: CircleBorder(),
-      //   ),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // bottomNavigationBar: CustomBottomNavBar(
-      //   currentIndex: _currentIndex, 
-      //   onTabSelected: (index){
-      //     setState(() {
-      //       _currentIndex = index;
-      //     });
-      //   },
-      //   selectedColor: orange,
-      //   unselectedColor: white,
-      //   backgroundColor: darkBlue,
-      //   email: widget.email,
-      // )
     );
   }
 }

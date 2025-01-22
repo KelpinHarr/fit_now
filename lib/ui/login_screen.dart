@@ -213,6 +213,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } 
     on FirebaseAuthException catch (e){
+      Navigator.pop(context);
       Fluttertoast.showToast(
         msg: 'Error :$e',
         toastLength: Toast.LENGTH_LONG,
@@ -250,154 +251,152 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SafeArea(
-        child: SizedBox(
-          width: size.width,
-          height: size.height,
-          child: SingleChildScrollView(
-            child: Stack(
-              children: [
-                const Upside(imgUrl: "assets/images/login.png"),
-                const PageTitleBar(title: "Login to your account"),
-                Padding(
-                  padding: EdgeInsets.only(top: 320),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(50),
-                        topRight: Radius.circular(50)
-                      )
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        iconButton(context, loginWithGoogle),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                          "or use your email account",
-                          style: TextStyle(
-                            color: blue,
-                            fontFamily: 'ReadexPro-Medium',
-                            fontSize: 13,
-                            fontWeight: FontWeight.w800
-                          ),
-                        ),
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              TextFieldContainer(
-                                child: TextFormField(
-                                  controller: _emailController,
-                                  cursorColor: orange,
-                                  decoration: InputDecoration(
-                                    icon: Icon(
-                                      Icons.email,
-                                      color: orange,
-                                    ),
-                                    hintText: 'Email',
-                                    hintStyle: const TextStyle(fontFamily: 'ReadexPro-Medium'),
-                                    border: InputBorder.none
-                                  ),
-                                ),
-                              ),
-                              TextFieldContainer(
-                                child: TextFormField(
-                                  controller: _passwordController,
-                                  obscureText: _obsecureText,
-                                  cursorColor: orange,
-                                  decoration: InputDecoration(
-                                    icon: Icon(
-                                      Icons.lock,
-                                      color: orange,
-                                    ),
-                                    hintText: "Password",
-                                    contentPadding: EdgeInsets.only(top: 10),
-                                    hintStyle:  TextStyle(fontFamily: 'ReadexPro-Medium'),
-                                    suffixIcon: IconButton(
-                                      onPressed: (){
-                                        setState(() {
-                                          _obsecureText = !_obsecureText;
-                                        });
-                                      }, 
-                                      icon: Icon(
-                                        _obsecureText ? Icons.visibility_off : Icons.visibility,
-                                        color: orange,
-                                      )
-                                    ),
-                                    border: InputBorder.none
-                                  ),
-                                ),
-                              ),
-                              switchListTile(),
-                              RoundedButton(text: 'LOGIN', press: login),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              // UnderPart(
-                              //   title: "Don't have an account?",
-                              //   navigatorText: "Register here",
-                              //   onTap: () {
-                              //     Navigator.pushNamedAndRemoveUntil(
-                              //       context,
-                              //       '/register',
-                              //       (Route<dynamic> route) => false,
-                              //     );
-                              //   },
-                              // ),
-                              UnderPart(
-                                title: "Don't have an account?",
-                                navigatorText: "Register here",
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, animation, secondaryAnimation) => const RegisterPage(),
-                                      transitionDuration: const Duration(milliseconds: 1200),
-                                      reverseTransitionDuration: const Duration(milliseconds: 1200),
-                                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                        return FadeThroughTransition(
-                                          animation: animation,
-                                          secondaryAnimation: secondaryAnimation,
-                                          child: child,
-                                        );
-                                      },
-                                    ),
-                                    // (Route<dynamic> route) => false,
-                                  );
-                                },
-                              ),
-                              TextButton(
-                                onPressed: _showDialog, 
-                                child: Text(
-                                  'Forgot password?',
-                                  style: TextStyle(
-                                    color: orange,
-                                    fontFamily: 'ReadexPro-Medium',
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 13
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 30)
-                            ],
-                          ),
-                        )
-                      ]
-                    ),
+      body: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              const Upside(imgUrl: "assets/images/login.png"),
+              const PageTitleBar(title: "Login to your account"),
+              Padding(
+                padding: EdgeInsets.only(top: 320),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(50),
+                      topRight: Radius.circular(50)
+                    )
                   ),
-                )
-              ],
-            ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      iconButton(context, loginWithGoogle),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        "or use your email account",
+                        style: TextStyle(
+                          color: blue,
+                          fontFamily: 'ReadexPro-Medium',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800
+                        ),
+                      ),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _emailController,
+                                cursorColor: orange,
+                                decoration: InputDecoration(
+                                  icon: Icon(
+                                    Icons.email,
+                                    color: orange,
+                                  ),
+                                  hintText: 'Email',
+                                  hintStyle: const TextStyle(fontFamily: 'ReadexPro-Medium'),
+                                  border: InputBorder.none
+                                ),
+                              ),
+                            ),
+                            TextFieldContainer(
+                              child: TextFormField(
+                                controller: _passwordController,
+                                obscureText: _obsecureText,
+                                cursorColor: orange,
+                                decoration: InputDecoration(
+                                  icon: Icon(
+                                    Icons.lock,
+                                    color: orange,
+                                  ),
+                                  hintText: "Password",
+                                  contentPadding: EdgeInsets.only(top: 10),
+                                  hintStyle:  TextStyle(fontFamily: 'ReadexPro-Medium'),
+                                  suffixIcon: IconButton(
+                                    onPressed: (){
+                                      setState(() {
+                                        _obsecureText = !_obsecureText;
+                                      });
+                                    }, 
+                                    icon: Icon(
+                                      _obsecureText ? Icons.visibility_off : Icons.visibility,
+                                      color: orange,
+                                    )
+                                  ),
+                                  border: InputBorder.none
+                                ),
+                              ),
+                            ),
+                            switchListTile(),
+                            RoundedButton(text: 'LOGIN', press: login),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            // UnderPart(
+                            //   title: "Don't have an account?",
+                            //   navigatorText: "Register here",
+                            //   onTap: () {
+                            //     Navigator.pushNamedAndRemoveUntil(
+                            //       context,
+                            //       '/register',
+                            //       (Route<dynamic> route) => false,
+                            //     );
+                            //   },
+                            // ),
+                            UnderPart(
+                              title: "Don't have an account?",
+                              navigatorText: "Register here",
+                              onTap: () {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation, secondaryAnimation) => const RegisterPage(),
+                                    transitionDuration: const Duration(milliseconds: 1200),
+                                    reverseTransitionDuration: const Duration(milliseconds: 1200),
+                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      return FadeThroughTransition(
+                                        animation: animation,
+                                        secondaryAnimation: secondaryAnimation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                  (Route<dynamic> route) => false,
+                                );
+                              },
+                            ),
+                            TextButton(
+                              onPressed: _showDialog, 
+                              child: Text(
+                                'Forgot password?',
+                                style: TextStyle(
+                                  color: orange,
+                                  fontFamily: 'ReadexPro-Medium',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 13
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 50)
+                          ],
+                        ),
+                      )
+                    ]
+                  ),
+                ),
+              )
+            ],
           ),
-        )
-      ),
+        ),
+      )
     );
   }
 
