@@ -46,13 +46,13 @@ class _WorkoutPageState extends State<WorkoutPage> {
     _futureVideo = _fetchVideoURL();
 
     _model = GenerativeModel(
-      model: 'gemini-1.5-pro', 
-      apiKey: 'AIzaSyAKxi3WF9J_CMl2H0SKlrbJIH5T4UF-Zgc'
+      model: 'gemini-pro', 
+      apiKey: 'AIzaSyAUx09EzgCiQ99NqxG8Fru2pT1RKF6bVf0'
     );
 
     _visionModel = GenerativeModel(
       model: 'gemini-vision-pro', 
-      apiKey: 'AIzaSyAKxi3WF9J_CMl2H0SKlrbJIH5T4UF-Zgc'
+      apiKey: 'AIzaSyAUx09EzgCiQ99NqxG8Fru2pT1RKF6bVf0'
     );
 
     _chat = _model.startChat();
@@ -70,7 +70,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
         _video = File(video.path);
       });
 
-      _getAnalysisFromGemini(_video, name);
+      _getAnalysisFromGemini(_video!.path, name);
     }
     catch(e){
       Fluttertoast.showToast(
@@ -95,15 +95,9 @@ class _WorkoutPageState extends State<WorkoutPage> {
 
         Make the result into a JSON format with schema like this schema:
         "{
-          "response_suggestion": {
-            "type": "string"
-          },
-          "style_score": {
-            "type": "integer"
-          },
-          "technique_score": {
-            "type": "string"
-          }
+          "response_suggestion": "Put your single paragraph analysis here",
+          "style_score": Put your style score analysis here,
+          "technique_score": Put your technique score analysis here
         }"
 
         Put the suggestion and analysis in the response_suggestion field, the style score from 0 to 100 into style_score field, and technique score from 0 to 100 into technique_score field.
@@ -128,9 +122,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
       Map<String, dynamic> analysisData = jsonDecode(analysisResult);
 
       _displayAnalysisResult(analysisData['response_suggestion'], analysisData['style_score'], analysisData['technique_score']);
-
     }
-    catch (e){
+    catch (e) {
       Fluttertoast.showToast(
         msg: 'Error: $e',
         toastLength: Toast.LENGTH_LONG,
@@ -165,7 +158,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                     child: Text(
                       'Style Score: ',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
                         fontFamily: 'ReadexPro-Medium'
                       ),
                     ),
@@ -174,7 +167,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                   Text(
                     '$style_score/100',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'ReadexPro-Medium'
                     ),
@@ -187,7 +180,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                   Text(
                     'Technique Score: ',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       fontFamily: 'ReadexPro-Medium'
                     ),
                   ),
@@ -195,7 +188,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                   Text(
                     '$technique_score/100',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'ReadexPro-Medium'
                     ),
@@ -211,7 +204,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
                     child: Text(
                       'Response Suggestions: ',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
+                        fontFamily: 'ReadexPro-Medium'
                       ),
                     ),
                   ),
@@ -220,7 +214,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                     child: Text(
                       response_suggestions,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold
                       ),
                       overflow: TextOverflow.ellipsis,
