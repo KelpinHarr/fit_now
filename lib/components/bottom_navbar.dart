@@ -4,6 +4,7 @@ import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/login_screen.dart';
 import 'package:fit_now/ui/report.dart';
 import 'package:fit_now/ui/workout.dart';
+import 'package:fit_now/ui/profilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:iconsax/iconsax.dart';
@@ -61,8 +62,7 @@ class CustomBottomNavBar extends StatelessWidget {
       await googleSignIn.signOut();
       await FirebaseAuth.instance.signOut();
       print('User successfully logged out');
-    } 
-    catch (e) {
+    } catch (e) {
       print('Error during logout: $e');
     }
   }
@@ -78,34 +78,35 @@ class CustomBottomNavBar extends StatelessWidget {
         switch (index) {
           case 0:
             Navigator.pushAndRemoveUntil(
-              context, 
-              MaterialPageRoute(builder: (context)=> HomePage(email: email)), 
-              (Route<dynamic> route) => false
-            );
+                context,
+                MaterialPageRoute(builder: (context) => HomePage(email: email)),
+                (Route<dynamic> route) => false);
             break;
-          
+
           case 1:
             Navigator.pushAndRemoveUntil(
-              context, 
-              MaterialPageRoute(builder: (context)=> WorkoutPage(email: email)), 
-              (Route<dynamic> route) => false
-            );
+                context,
+                MaterialPageRoute(
+                    builder: (context) => WorkoutPage(email: email)),
+                (Route<dynamic> route) => false);
             break;
           case 3:
             Navigator.pushAndRemoveUntil(
-              context, 
-              MaterialPageRoute(builder: (context)=> ReportPage(email: email)), 
-              (Route<dynamic> route) => false
-            );
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ReportPage(email: email)),
+                (Route<dynamic> route) => false);
             break;
-          case 4 :
+          case 4:
             await SessionHelper.clearLoginStatus();
             // await logoutFromGoogle();
             Navigator.pushAndRemoveUntil(
-              context, 
-              MaterialPageRoute(builder: (context) => LoginPage()), 
-              (Route<dynamic> route) => false
-            );
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProfilePage(
+                          email: email,
+                        )),
+                (Route<dynamic> route) => false);
             break;
 
           default:

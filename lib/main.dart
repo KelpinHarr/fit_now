@@ -5,11 +5,12 @@ import 'package:fit_now/ui/home.dart';
 import 'package:fit_now/ui/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fit_now/ui/profilePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await firebaseInit();
-  
+
   runApp(const MyApp());
 }
 
@@ -20,8 +21,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
       future: _initApp(),
-      builder: (context, snapshot){
-        if (snapshot.connectionState == ConnectionState.waiting){
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return MaterialApp(
             home: Scaffold(
               body: Center(
@@ -29,8 +30,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
           );
-        }
-        else if (snapshot.hasError){
+        } else if (snapshot.hasError) {
           return MaterialApp(
             home: Scaffold(
               body: Center(
@@ -38,33 +38,30 @@ class MyApp extends StatelessWidget {
               ),
             ),
           );
-        }
-        else if (snapshot.hasData){
+        } else if (snapshot.hasData) {
           bool isLoggedIn = snapshot.data!['isLoggedIn'] ?? false;
           // String userRole = snapshot.data!['userRole'] ?? "";
           String userName = snapshot.data!['userName'] ?? "";
           String userEmail = snapshot.data!['userEmail'] ?? "";
 
           Widget home;
-          if (isLoggedIn){
+          if (isLoggedIn) {
             home = HomePage(email: userEmail);
-          }
-          else {
+          } else {
             home = LoginPage();
           }
 
           return MaterialApp(
             home: BlocProvider(
               create: (context) => WorkoutBloc(
-                initialCheckboxStates: ModalRoute.of(context)?.settings.arguments as List<bool>, 
-                email: userEmail
-              ),
+                  initialCheckboxStates:
+                      ModalRoute.of(context)?.settings.arguments as List<bool>,
+                  email: userEmail),
               child: home,
             ),
             debugShowCheckedModeBanner: false,
           );
-        }
-        else {
+        } else {
           return MaterialApp(
             home: Scaffold(
               body: Center(
@@ -95,7 +92,7 @@ class MyApp extends StatelessWidget {
     String? userName = await SessionHelper.getUserName();
     String? userEmail = await SessionHelper.getUserEmail();
 
-    if (isLoginExpired){
+    if (isLoginExpired) {
       await SessionHelper.clearLoginStatus();
       isLoggedIn = false;
     }
@@ -107,4 +104,3 @@ class MyApp extends StatelessWidget {
     };
   }
 }
-
