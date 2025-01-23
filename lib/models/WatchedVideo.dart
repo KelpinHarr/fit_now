@@ -8,4 +8,5 @@ class WatchedVideo {
   });
 
   String get thumbnailUrl => "https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg";
+  String get title => "${video.title}";
 }
