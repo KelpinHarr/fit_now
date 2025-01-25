@@ -23,7 +23,7 @@ class _ChatBotPageState extends State<ChatBotPage> with SingleTickerProviderStat
 
   late final _provider = GeminiProvider(
     model: GenerativeModel(
-      model: 'gemini-1.5-flash', 
+      model: 'gemini-1.5-pro', 
       apiKey: 'AIzaSyCJ64OWpDfyxn51aOM39_hpeEM9hazz7NI'
     )
   );

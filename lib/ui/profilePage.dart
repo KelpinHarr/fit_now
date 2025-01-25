@@ -3,6 +3,9 @@ import 'package:fit_now/bloc/workout_bloc.dart';
 import 'package:fit_now/models/Video.dart';
 import 'package:fit_now/models/WatchedVideo.dart';
 import 'package:fit_now/models/Workout.dart';
+import 'package:fit_now/session_helper.dart';
+import 'package:fit_now/ui/chat.dart';
+import 'package:fit_now/ui/login_screen.dart';
 import 'package:fit_now/ui/target_muscle_detail.dart';
 import 'package:fit_now/ui/workout_detail.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _birthday = '';
   int _weight = 0;
   int _height = 0;
+  int _currentIndex = 4;
 
   @override
   void initState() {
@@ -49,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
       if (userDoc.exists) {
         setState(() {
           _name = userDoc['name'];
-          _birthday = userDoc['birthday'];
+          // _birthday = userDoc['birthday'];
           _weight = userDoc['weight'];
           _height = userDoc['height'];
         });
@@ -59,6 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
       print("Error loading user data: $e");
     }
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -103,16 +108,21 @@ class _ProfilePageState extends State<ProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildInfoCard('70 Kg', 'Weight'),
+                  _buildInfoCard('$_weight Kg', 'Weight'),
                   _buildInfoCard('21', 'Years Old'), // Replace with actual age
-                  _buildInfoCard('170 CM', 'Height'),
+                  _buildInfoCard('$_height CM', 'Height'),
                 ],
               ),
               SizedBox(height: 30),
               ElevatedButton(
                   // Logout button
-                  onPressed: () {
-                    // Implement logout logic
+                  onPressed: () async {
+                    await SessionHelper.clearLoginStatus();
+                    // await logoutFromGoogle();
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (Route<dynamic> route) => false);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF0E1D3A), // dark blue
@@ -133,15 +143,40 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
+      floatingActionButton: SizedBox(
+        height: 70,
+        width: 70,
+        child: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              _currentIndex = 4;
+            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChatPage(email: widget.email)),
+            );
+          },
+          backgroundColor: darkBlue,
+          child: Icon(
+            Iconsax.messages_1,
+            color: _currentIndex == 2 ? orange : white,
+            size: 35,
+          ),
+          shape: CircleBorder(),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: CustomBottomNavBar(
-        // Bottom navigation bar
-        currentIndex: 4, // Set the index to highlight the profile tab
+        currentIndex: _currentIndex,
         onTabSelected: (index) {
-          // Implement navigation logic
+          setState(() {
+            _currentIndex = index;
+          });
         },
-        selectedColor: Color(0xFFF39C12), // Orange
-        unselectedColor: Colors.white,
-        backgroundColor: Color(0xFF0E1D3A), // Dark blue
+        selectedColor: orange,
+        unselectedColor: white,
+        backgroundColor: darkBlue,
         email: widget.email,
       ),
     );
