@@ -47,15 +47,15 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
-          .doc(widget.email) // Use email as document ID
+          .where('email', isEqualTo: widget.email)
           .get();
 
-      if (userDoc.exists) {
+      if (userDoc.docs.isNotEmpty) {
+        final user = userDoc.docs.first;
         setState(() {
-          _name = userDoc['name'];
-          // _birthday = userDoc['birthday'];
-          _weight = userDoc['weight'];
-          _height = userDoc['height'];
+          _name = user['name'];
+          _weight = user['weight'];
+          _height = user['height'];
         });
       }
     } catch (e) {
@@ -69,26 +69,24 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Added AppBar
-        backgroundColor: Color(0xFF0E1D3A), // Dark blue color
+        backgroundColor: Color(0xFF0E1D3A),
         title: Text('Profile',
-            style: TextStyle(color: Color(0xFFF39C12))), // Orange title
+            style: TextStyle(color: Color(0xFFF39C12))),
       ),
       body: Container(
-        color: white, // Light blue background
+        color: white,
         child: Center(
-          // Centered content
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Vertically center
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircleAvatar(
                 radius: 60,
                 backgroundImage: AssetImage(
-                    'assets/profile_picture.jpg'), // Replace with actual image path or NetworkImage
-              ),
+                    'assets/profile_picture.jpg'),
+                ),
               SizedBox(height: 20),
               Text(
-                _name, // Display the name
+                _name,
                 style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
