@@ -36,6 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   int _weight = 0;
   int _height = 0;
   int _currentIndex = 4;
+  int _ages = 0;
 
   @override
   void initState() {
@@ -53,7 +54,9 @@ class _ProfilePageState extends State<ProfilePage> {
       if (userDoc.docs.isNotEmpty) {
         final user = userDoc.docs.first;
         setState(() {
+          _datass = user[];
           _name = user['name'];
+          _birthday = user['date_of_birth'];
           _weight = user['weight'];
           _height = user['height'];
         });
@@ -63,15 +66,13 @@ class _ProfilePageState extends State<ProfilePage> {
       print("Error loading user data: $e");
     }
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF0E1D3A),
-        title: Text('Profile',
-            style: TextStyle(color: Color(0xFFF39C12))),
+        title: Text('Profile', style: TextStyle(color: Color(0xFFF39C12))),
       ),
       body: Container(
         color: white,
@@ -81,9 +82,8 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage(
-                    'assets/profile_picture.jpg'),
-                ),
+                backgroundImage: AssetImage('assets/profile_picture.jpg'),
+              ),
               SizedBox(height: 20),
               Text(
                 _name,
@@ -95,19 +95,20 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(height: 10),
               Text(
                 widget.email, // Display Email
-                style: TextStyle(fontSize: 16, color: Colors.white),
+                style: TextStyle(fontSize: 16, color: Colors.black),
               ),
               SizedBox(height: 10),
               Text(
                 "Birthday: $_birthday", // Display Birthday
-                style: TextStyle(fontSize: 16, color: Colors.white),
+                style: TextStyle(fontSize: 16, color: Colors.black),
               ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildInfoCard('$_weight Kg', 'Weight'),
-                  _buildInfoCard('21', 'Years Old'), // Replace with actual age
+                  _buildInfoCard(
+                      '$_datas', 'Years Old'), // Replace with actual age
                   _buildInfoCard('$_height CM', 'Height'),
                 ],
               ),

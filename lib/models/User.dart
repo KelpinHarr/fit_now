@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_now/models/WatchedVideo.dart';
 
 class User {
@@ -8,12 +9,14 @@ class User {
   final List<WatchedVideo> url;
   final int height;
   final int weight;
+  final Timestamp date_of_birth;
 
   User({
     required this.name,
     required this.url,
     required this.height,
     required this.weight,
+    required this.date_of_birth,
   });
 
   // factory User.fromJson(Map<String, dynamic> json) => User(
