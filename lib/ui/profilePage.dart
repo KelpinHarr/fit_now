@@ -53,12 +53,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
       if (userDoc.docs.isNotEmpty) {
         final user = userDoc.docs.first;
+        Timestamp dobUser = user['date_of_birth'];
+        DateTime dob = dobUser.toDate();
+
         setState(() {
-          _datass = user[];
           _name = user['name'];
-          _birthday = user['date_of_birth'];
+          _birthday = "${dob.day}/${dob.month}/${dob.year}";
           _weight = user['weight'];
           _height = user['height'];
+          _ages = 2025 - dob.year;
         });
       }
     } catch (e) {
@@ -108,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   _buildInfoCard('$_weight Kg', 'Weight'),
                   _buildInfoCard(
-                      '$_datas', 'Years Old'), // Replace with actual age
+                      '$_ages', 'Years Old'), // Replace with actual age
                   _buildInfoCard('$_height CM', 'Height'),
                 ],
               ),
