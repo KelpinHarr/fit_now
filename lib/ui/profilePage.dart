@@ -59,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
         setState(() {
           _name = user['name'];
-          _birthday = "${dob.day} ${getMonthName(dob.month)} ${dob.year}";
+          _birthday = "${getMonthName(dob.month)} ${dob.day}, ${dob.year}";
           _weight = user['weight'];
           _height = user['height'];
           _ages = 2025 - dob.year;
