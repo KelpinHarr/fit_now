@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_now/bloc/workout_bloc.dart';
+import 'package:fit_now/controller/user_controller.dart';
 import 'package:fit_now/models/Video.dart';
 import 'package:fit_now/models/WatchedVideo.dart';
 import 'package:fit_now/models/Workout.dart';
@@ -58,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
         setState(() {
           _name = user['name'];
-          _birthday = "${dob.day}/${dob.month}/${dob.year}";
+          _birthday = "${dob.day} ${getMonthName(dob.month)} ${dob.year}";
           _weight = user['weight'];
           _height = user['height'];
           _ages = 2025 - dob.year;
