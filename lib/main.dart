@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:fit_now/bloc/workout_bloc.dart';
 import 'package:fit_now/config/config.dart';
 import 'package:fit_now/session_helper.dart';
@@ -10,6 +11,10 @@ import 'package:fit_now/ui/profilePage.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await firebaseInit();
+
+  await FirebaseAppCheck.instance.activate(
+    appleProvider: AppleProvider.deviceCheck
+  );
 
   runApp(const MyApp());
 }

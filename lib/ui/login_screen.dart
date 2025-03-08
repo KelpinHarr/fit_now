@@ -195,10 +195,23 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final _auth = FirebaseAuth.instance;
       final googleUser = await GoogleSignIn().signIn();
-      final googleAuth = await googleUser?.authentication;
+
+      if (googleUser == null){
+        Navigator.pop(context);
+        Fluttertoast.showToast(
+          msg: 'No google user',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          textColor: Colors.white,
+          backgroundColor: Colors.orange,
+          fontSize: 14
+        );
+        return;
+      }
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth?.idToken,
-        accessToken: googleAuth?.accessToken
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken
       );
 
       UserCredential userCredential = await _auth.signInWithCredential(credential);
